@@ -35,14 +35,22 @@ If you apply any transformation, you should include a proper explanation in your
 
 ### 2.1. Preprocessing dataset “Cookie Cats AB Testing”
 
+First of all, we used the function table to look at the different variables of the Cookie Cats AB Testing. We discovered that the only variable that needed a preprocess was the one called "retention_1" that had two versions of TRUE and two versions of FALSE,
+ones with lowercase letters and spaces and the others correct, with capital letters. The following code shows the process on preprocessing the content of this variable.
+
 ```{r preprocessing Cookie Cats AB Testing}
-  
+  table(DS$retention_1)
+  DS$retention_1[DS$retention_1 == "false "] = FALSE
+  DS$retention_1[DS$retention_1 == "  true "] = TRUE
+  table(DS$retention_1)
 ```
 
 ### 2.2. Preprocessing dataset “Cookie Cats Purchases”
 
+Comparar los ids de DS con los de PR (leer enunciado).
+
 ```{r preprocessing Cookie Cats Purchases}
-  
+
 ```
 
 ## 3. Descriptive Analytics

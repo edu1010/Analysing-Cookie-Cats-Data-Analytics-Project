@@ -11,7 +11,7 @@
 
 <meta name="author" content="Eduard Corral, Marcel Feliu and Paula Ros." />
 
-<meta name="date" content="2022-11-20" />
+<meta name="date" content="2022-11-26" />
 
 <title>Analysing Cookie Cats</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">Analysing Cookie Cats</h1>
 <h4 class="author">Eduard Corral, Marcel Feliu and Paula Ros.</h4>
-<h4 class="date">2022-11-20</h4>
+<h4 class="date">2022-11-26</h4>
 
 </div>
 
@@ -393,6 +393,23 @@ transformation, you should include a proper explanation in your
 report.</p>
 <div id="preprocessing-dataset-cookie-cats-ab-testing" class="section level3">
 <h3>2.1. Preprocessing dataset “Cookie Cats AB Testing”</h3>
+<p>First of all, we used the function table to look at the different
+variables of the Cookie Cats AB Testing. We discovered that the only
+variable that needed a preprocess was the one called “retention_1” that
+had two versions of TRUE and two versions of FALSE, ones with lowercase
+letters and spaces and the others correct, with capital letters. The
+following code shows the process on preprocessing the content of this
+variable.</p>
+<pre class="r"><code>  table(DS$retention_1)</code></pre>
+<pre><code>## 
+##   true    FALSE  false     TRUE 
+##       7   50023      13   40146</code></pre>
+<pre class="r"><code>  DS$retention_1[DS$retention_1 == &quot;false &quot;] = FALSE
+  DS$retention_1[DS$retention_1 == &quot;  true &quot;] = TRUE
+  table(DS$retention_1)</code></pre>
+<pre><code>## 
+## FALSE  TRUE 
+## 50036 40153</code></pre>
 </div>
 <div id="preprocessing-dataset-cookie-cats-purchases" class="section level3">
 <h3>2.2. Preprocessing dataset “Cookie Cats Purchases”</h3>
@@ -430,9 +447,36 @@ data set separately.</p>
 </div>
 <div id="ab-testing" class="section level2">
 <h2>5. A/B testing</h2>
+<div id="hypotheses" class="section level3">
+<h3>5.1 Hypotheses</h3>
+</div>
+<div id="visualisation" class="section level3">
+<h3>5.2 Visualisation</h3>
+</div>
+<div id="computation" class="section level3">
+<h3>5.3 Computation</h3>
+</div>
+<div id="conclusion-of-ab-testing" class="section level3">
+<h3>5.4 Conclusion of A/B testing</h3>
+</div>
 </div>
 <div id="regression-analysis" class="section level2">
 <h2>6. Regression analysis</h2>
+<div id="visual-representation" class="section level3">
+<h3>6.1 Visual representation</h3>
+</div>
+<div id="building-the-model" class="section level3">
+<h3>6.2 Building the model</h3>
+</div>
+<div id="model-fit" class="section level3">
+<h3>6.3 Model fit</h3>
+</div>
+<div id="predict-a-case" class="section level3">
+<h3>6.4 Predict a case</h3>
+</div>
+<div id="simulation" class="section level3">
+<h3>6.5 Simulation</h3>
+</div>
 </div>
 <div id="dashboard" class="section level2">
 <h2>7. Dashboard</h2>
