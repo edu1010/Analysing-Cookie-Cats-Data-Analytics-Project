@@ -11,7 +11,7 @@
 
 <meta name="author" content="Eduard Corral, Marcel Feliu and Paula Ros." />
 
-<meta name="date" content="2022-11-26" />
+<meta name="date" content="2022-11-29" />
 
 <title>Analysing Cookie Cats</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">Analysing Cookie Cats</h1>
 <h4 class="author">Eduard Corral, Marcel Feliu and Paula Ros.</h4>
-<h4 class="date">2022-11-26</h4>
+<h4 class="date">2022-11-29</h4>
 
 </div>
 
@@ -393,26 +393,33 @@ transformation, you should include a proper explanation in your
 report.</p>
 <div id="preprocessing-dataset-cookie-cats-ab-testing" class="section level3">
 <h3>2.1. Preprocessing dataset “Cookie Cats AB Testing”</h3>
-<p>First of all, we used the function table to look at the different
-variables of the Cookie Cats AB Testing. We discovered that the only
-variable that needed a preprocess was the one called “retention_1” that
-had two versions of TRUE and two versions of FALSE, ones with lowercase
-letters and spaces and the others correct, with capital letters. The
-following code shows the process on preprocessing the content of this
-variable.</p>
+<p>First of all, we used the function is.na() to locate the rows that
+had NA and then, we deleted them.</p>
+<pre class="r"><code>  naUserid &lt;- which(is.na(DS$userid)) ; naUserid</code></pre>
+<pre><code>## [1]  300  783 9878</code></pre>
+<pre class="r"><code>  DS &lt;- DS[-naUserid, ]
+  naUserid</code></pre>
+<pre><code>## [1]  300  783 9878</code></pre>
+<p>After that, we used the function table() to look at the different
+variables to discover any more inconsistencies. We discovered that the
+variable called “retention_1” had two versions of TRUE and two versions
+of FALSE, ones with lowercase letters and spaces and the others correct,
+with capital letters. The following code shows the process on
+preprocessing the content of this variable.</p>
 <pre class="r"><code>  table(DS$retention_1)</code></pre>
 <pre><code>## 
 ##   true    FALSE  false     TRUE 
-##       7   50023      13   40146</code></pre>
+##       7   50022      13   40144</code></pre>
 <pre class="r"><code>  DS$retention_1[DS$retention_1 == &quot;false &quot;] = FALSE
   DS$retention_1[DS$retention_1 == &quot;  true &quot;] = TRUE
   table(DS$retention_1)</code></pre>
 <pre><code>## 
 ## FALSE  TRUE 
-## 50036 40153</code></pre>
+## 50035 40151</code></pre>
 </div>
 <div id="preprocessing-dataset-cookie-cats-purchases" class="section level3">
 <h3>2.2. Preprocessing dataset “Cookie Cats Purchases”</h3>
+<p>Comparar los ids de DS con los de PR (leer enunciado).</p>
 </div>
 </div>
 <div id="descriptive-analytics" class="section level2">
@@ -420,22 +427,48 @@ variable.</p>
 <p>Perform descriptive analytics of the datasets visually and
 numerically. To make this task simpler, we’ll do the analysis for each
 data set separately.</p>
+<pre class="r"><code>#install.packages(&quot;pastecs&quot;)
+#library(pastecs)
+#stat.desc(PR)
+#stat.desc(DS)
+
+#merge
+#library(dplyr)
+#usersDownload&lt;-merge(DS,PR,by.x=&quot;userid&quot;,by.y=&quot;id&quot;)
+#unique(usersDownload$userid)</code></pre>
 <div id="dataset-cookie-cats-ab-testing" class="section level3">
 <h3>3.1. Dataset “Cookie Cats AB Testing”</h3>
 <div id="users-that-downloaded-the-game" class="section level4">
 <h4>3.1.1 Users that downloaded the game</h4>
+<p>There are 90.186 users that downloaded the Cookie Cats game.</p>
+<pre class="r"><code>  nrow(DS)</code></pre>
+<pre><code>## [1] 90186</code></pre>
 </div>
 <div id="distribution-of-users-in-groups" class="section level4">
 <h4>3.1.2 Distribution of users in groups</h4>
+<p>From the 90.186 users, 44699 played the gate number 30 and 45.487
+played the gate number 40.</p>
+<pre class="r"><code>table(DS$version)</code></pre>
+<pre><code>## 
+## gate_30 gate_40 
+##   44699   45487</code></pre>
 </div>
 <div id="game-rounds" class="section level4">
 <h4>3.1.3 Game rounds</h4>
-</div>
-<div id="retention-day-1-and-day-7" class="section level4">
-<h4>3.1.4 Retention (day 1 and day 7)</h4>
+<p>What is the distribution of game rounds in the players’ population?
+And among the users of version A and version B of the game
+separately</p>
+<pre class="r"><code>boxplot(DS$sum_gamerounds)</code></pre>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAAAPACAMAAADDuCPrAAAArlBMVEUAAAAAADoAAGYAOjoAOmYAOpAAZrY6AAA6OgA6Ojo6OmY6OpA6ZmY6ZpA6ZrY6kNtmAABmOgBmOjpmZmZmkJBmkLZmtttmtv+QOgCQOjqQZgCQZjqQtraQttuQtv+Q2/+2ZgC2Zjq2kGa2kLa2tpC2tra2ttu229u22/+2///bkDrbkGbbtmbbtpDbtrbb27bb29vb2//b////tmb/25D/27b/29v//7b//9v////1ivb3AAAACXBIWXMAAB2HAAAdhwGP5fFlAAAViUlEQVR4nO3d8XtTZZ7G4dRFKzPrKJNF3UVWhjGAjAJjYUn+/39sE4pw2lTa98mb5v3G+/7BS3KR015eycec5uTpbAVAZHbobwCgKgEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChASUICQgAKEBBQgJKAAIQEFCAkoQEhAAUICChDae0CXr14sFosnr37b9xcCuGX7DejLB7OPvnq6168FcMv2GdA392YX3flxj18N4JbtMaBnp5to3p2f+3Lzh5Pv9vflAG7Z/gL69pt1MB9Obvh1HdTPft7b1wO4ZfsL6POtXG6S+vXevh7ALdtbQJffz2aXT9jPZrPPvRsPHIu9BXT9cnPrfP2q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" width="672" />
+#### 3.1.4 Retention (day 1 and day 7)</p>
+<pre class="r"><code>  # usersDowload[usersDownload$userid,usersDownload$retention1,usersDownload$retention_7]</code></pre>
 </div>
 <div id="are-there-non-playing-users" class="section level4">
 <h4>3.1.5 Are there non-playing users?</h4>
+<pre class="r"><code>#noPlayers &lt;-length(DS$userid[DS$sum_gamerounds ==0])
+#gamers &lt;- length(PR$id) - noPlayer
+#totalPl&lt;- c(noPlayers,gamers)
+#pie(totalPl)</code></pre>
 </div>
 </div>
 <div id="dataset-cookie-cats-purchases" class="section level3">
