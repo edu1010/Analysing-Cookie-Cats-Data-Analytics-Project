@@ -60,7 +60,17 @@ the analysis for each data set separately.
 
 ### 3.1. Dataset “Cookie Cats AB Testing”
 #### 3.1.1 Users that downloaded the game
+```{r Users that downloaded the games}
+library(dplyr)
+summarise(group_by(DS,DS$userid),PR$id)
+          
+```
 #### 3.1.2 Distribution of users in groups
+```{r Distribution of users in groups}
+library(dplyr)
+```
+
+
 #### 3.1.3 Game rounds
 #### 3.1.4 Retention (day 1 and day 7)
 #### 3.1.5 Are there non-playing users?
