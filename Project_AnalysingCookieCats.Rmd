@@ -57,6 +57,13 @@ Comparar los ids de DS con los de PR (leer enunciado).
 
 Perform descriptive analytics of the datasets visually and numerically. To make this task simpler, we’ll do
 the analysis for each data set separately.
+```{r Descriptive Analytics}
+install.packages("pastecs")
+library(pastecs)
+stat.desc(PR)
+stat.desc(DS)
+
+```
 
 ### 3.1. Dataset “Cookie Cats AB Testing”
 #### 3.1.1 Users that downloaded the game
