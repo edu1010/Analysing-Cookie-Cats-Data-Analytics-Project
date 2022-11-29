@@ -62,18 +62,37 @@ the analysis for each data set separately.
 #### 3.1.1 Users that downloaded the game
 ```{r Users that downloaded the games}
 library(dplyr)
-summarise(group_by(DS,DS$userid),PR$id)
+usersDowload<-merge(DS,PR,by.x="userid",by.y="id")
+unique(usersDowload$userid)
+
           
 ```
 #### 3.1.2 Distribution of users in groups
 ```{r Distribution of users in groups}
-library(dplyr)
+#que grupos 
 ```
 
 
 #### 3.1.3 Game rounds
+
 #### 3.1.4 Retention (day 1 and day 7)
+
+```{r retention}
+
+usersDowload[usersDowload$userid,usersDowload$retention1,usersDowload$retention_7]
+
+```
+        
+
 #### 3.1.5 Are there non-playing users?
+```{r no player users}
+
+noPlayers <-length(DS$userid[DS$sum_gamerounds ==0])
+gamers <- length(PR$id) - noPlayer
+totalPl<- c(noPlayers,gamers)
+pie(totalPl)
+
+```
 
 ### 3.2 Dataset “Cookie Cats Purchases”
 
