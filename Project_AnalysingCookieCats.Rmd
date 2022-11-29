@@ -51,6 +51,13 @@ Comparar los ids de DS con los de PR (leer enunciado).
 
 ```{r preprocessing Cookie Cats Purchases}
 
+positionsToDelete <- which(PR$id %in% DS$userid)
+length(positionsToDelete)
+length(PR$id)
+#positionsToDeletepositionsToDelete <- which(is.element(PR$id,DS$userid)) 
+positionsToDelete
+PR2 <- PR[-positionsToDelete, ]
+
 ```
 
 ## 3. Descriptive Analytics
@@ -83,7 +90,7 @@ Versiones<-unique(DS$version)
 
 
 
-```{game rounds}
+```{r game rounds}
 
 boxplot(DS$sum_gamerounds)
 
