@@ -397,9 +397,7 @@ report.</p>
 had NA and then, we deleted them.</p>
 <pre class="r"><code>  naUserid &lt;- which(is.na(DS$userid)) ; naUserid</code></pre>
 <pre><code>## [1]  300  783 9878</code></pre>
-<pre class="r"><code>  DS &lt;- DS[-naUserid, ]
-  naUserid</code></pre>
-<pre><code>## [1]  300  783 9878</code></pre>
+<pre class="r"><code>  DS &lt;- DS[-naUserid, ]</code></pre>
 <p>After that, we used the function table() to look at the different
 variables to discover any more inconsistencies. We discovered that the
 variable called “retention_1” had two versions of TRUE and two versions
@@ -419,7 +417,21 @@ preprocessing the content of this variable.</p>
 </div>
 <div id="preprocessing-dataset-cookie-cats-purchases" class="section level3">
 <h3>2.2. Preprocessing dataset “Cookie Cats Purchases”</h3>
-<p>Comparar los ids de DS con los de PR (leer enunciado).</p>
+<p>For the “Cookie Cats Purchases” dataset we discovered that the NA
+from the previous dataset were included too in this one. We obtained the
+positions of this variables and deleted their rows.</p>
+<pre class="r"><code>  inexistentValues &lt;- which((PR$id %in% DS$userid) == FALSE) ; inexistentValues</code></pre>
+<pre><code>## [1] 310 595 926</code></pre>
+<pre class="r"><code>  PR &lt;- PR[-inexistentValues, ]
+  which((PR$id %in% DS$userid) == FALSE)</code></pre>
+<pre><code>## integer(0)</code></pre>
+<p>We deleted the NAs that were in the column purch:</p>
+<pre class="r"><code>  naPurch &lt;- which(is.na(PR$purch)) ; naPurch</code></pre>
+<pre><code>## [1]  20  39 163 421 460</code></pre>
+<pre class="r"><code>  PR &lt;- PR[-naPurch, ]</code></pre>
+<p>Finally, we changed the column purch that was formed by characters to
+a numerical one, deleting the EUR.</p>
+<pre class="r"><code>  PR[&#39;purch&#39;] &lt;-  gsub(&quot;[a-zA-Z]&quot;,&quot;&quot;, PR$purch)</code></pre>
 </div>
 </div>
 <div id="descriptive-analytics" class="section level2">
