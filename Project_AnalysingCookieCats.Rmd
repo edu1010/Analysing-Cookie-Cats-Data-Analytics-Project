@@ -159,7 +159,7 @@ ALTERNATIVE: gate 40 improves the engagement of the users
 
 ### 5.4 Conclusion of A/B testing
 
-## 6. Regression analysis(paula :)
+## 6. Regression analysis (paula :)
 ### 6.1 Visual representation
 ### 6.2 Building the model
 ### 6.3 Model fit
