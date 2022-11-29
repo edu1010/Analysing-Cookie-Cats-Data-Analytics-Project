@@ -138,29 +138,39 @@ KAKAKAK
   paste(as.character(round(percentageNonPlayingUsers, 2)),"%")
 ```
 
-### 3.2 Dataset “Cookie Cats Purchases”
+### 3.2 Dataset “Cookie Cats Purchases” (MARCEEEEEEEEEL :)
+#### 3.2.1 Percentage of paying users
 
+```{r Percentage of paying users}
 
-## 4. Monetization metrics
+```
 
-## 5. A/B testing
+## 4. Monetization metrics (MARCEEEEEEEEEL :)
+
+## 5. A/B testing (edu :)
 ### 5.1 Hypotheses
+NULL: gate 40 doesn't improve the engagement of the users
+ALTERNATIVE: gate 40 improves the engagement of the users
 ### 5.2 Visualisation
 ### 5.3 Computation
+```{r Computation}
+  #stdev <- sqrt(sum((dataset$A)^2) / (length(dataset$A)-1))
+```
+
 ### 5.4 Conclusion of A/B testing
 
-## 6. Regression analysis
+## 6. Regression analysis(paula :)
 ### 6.1 Visual representation
 ### 6.2 Building the model
 ### 6.3 Model fit
 ### 6.4 Predict a case
 ### 6.5 Simulation
 
-## 7. Dashboard
+## 7. Dashboard (quien acabe antes :)
 
-## 8. Conclusion
+## 8. Conclusion (todes :)
 
-## 9. Team contribution
+## 9. Team contribution (todes :)
 
-## 10. Non-cheating manifesto
+## 10. Non-cheating manifesto (todes :)
 
