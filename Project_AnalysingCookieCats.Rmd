@@ -53,10 +53,12 @@ ones with lowercase letters and spaces and the others correct, with capital lett
 
 ### 2.2. Preprocessing dataset “Cookie Cats Purchases”
 
-Comparar los ids de DS con los de PR (leer enunciado).
+For the "Cookie Cats Purchases" dataset we discovered that the NA from the previous dataset were included too in this one. We obtained the positions of this variables and deleted their rows.
 
 ```{r preprocessing Cookie Cats Purchases}
-
+  inexistentValues <- which((PR$id %in% DS$userid) == FALSE) ; inexistentValues
+  PR <- PR[-inexistentValues, ]
+  which((PR$id %in% DS$userid) == FALSE)
 ```
 
 ## 3. Descriptive Analytics
