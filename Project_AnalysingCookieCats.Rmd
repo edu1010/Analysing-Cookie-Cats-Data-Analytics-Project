@@ -63,15 +63,23 @@ For the "Cookie Cats Purchases" dataset we discovered that the NA from the previ
   PR <- PR[-inexistentValues, ]
   which((PR$id %in% DS$userid) == FALSE)
 ```
-We deleted the NAs that were in the column purch:
+In addition, we deleted the NAs that were in the column purch.
 ```{r Preprocessing NAs from variable purch}
   naPurch <- which(is.na(PR$purch)) ; naPurch
   PR <- PR[-naPurch, ]
 ```
-Finally, we changed the column purch that was formed by characters to a numerical one, deleting the EUR.
+Moreover, we changed the column purch that was formed by characters to a numerical one, deleting the EUR.
 ```{r Preprocessing variable purch}
   PR['purch'] <-  as.numeric(gsub("[a-zA-Z]","", PR$purch))
 ```
+
+Finally, we changed the negative values into positive because it didn't make sense to buy in negative.
+```{r Changing negative values into positive}
+  PR$purch[PR$purch < 0] <- -(PR$purch[PR$purch < 0])
+  unique(PR$purch)
+```
+
+
 
 ## 3. Descriptive Analytics
 
