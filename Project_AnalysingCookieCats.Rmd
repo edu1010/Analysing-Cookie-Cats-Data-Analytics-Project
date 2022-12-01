@@ -18,7 +18,7 @@ R. For a smoother correction on my side, please provide the data frames with the
 For each dataset, show and describe the information that they contain: rows and columns of the dataset, and
 types of variables.
 
-```{r getting to know the datasets}
+```{r Getting to know the datasets}
   DS <- read.csv("cookie_cats_ABtest.csv", sep = ",")
   PR <- read.csv("cookie_cats_purch.csv", sep = ",")
   
@@ -37,39 +37,39 @@ If you apply any transformation, you should include a proper explanation in your
 
 First of all, we used the function is.na() to locate the rows that had NA and then, we deleted them.
 
-```{r preprocessing part 1 Cookie Cats AB Testing}
+```{r Preprocessing part 1 Cookie Cats AB Testing}
   naUserid <- which(is.na(DS$userid)) ; naUserid
   DS <- DS[-naUserid, ]
 ```
 After that, we used the function table() to look at the different variables to discover any more inconsistencies. We discovered that the variable called "retention_1" had two versions of TRUE and two versions of FALSE,
 ones with lowercase letters and spaces and the others correct, with capital letters. The following code shows the process on preprocessing the content of this variable.
 
-```{r preprocessing part 2 Cookie Cats AB Testing}
+```{r Preprocessing part 2 Cookie Cats AB Testing}
   table(DS$retention_1)
   DS$retention_1[DS$retention_1 == "false "] = FALSE
   DS$retention_1[DS$retention_1 == "  true "] = TRUE
   table(DS$retention_1)
 ```
 Finally, we deleted one value from the sum_gamerounds that was too big and had no consistence compared to the rest of the values.
-```{r preprocessing part 2 Cookie Cats AB Testing}
+```{r Preprocessing part 3 Cookie Cats AB Testing}
   DS <- DS[-which.max(DS$sum_gamerounds), ]
 ```
 ### 2.2. Preprocessing dataset “Cookie Cats Purchases”
 
 For the "Cookie Cats Purchases" dataset we discovered that the NA from the previous dataset were included too in this one. We obtained the positions of this variables and deleted their rows.
 
-```{r preprocessing Cookie Cats Purchases}
+```{r Preprocessing Cookie Cats Purchases}
   inexistentValues <- which((PR$id %in% DS$userid) == FALSE) ; inexistentValues
   PR <- PR[-inexistentValues, ]
   which((PR$id %in% DS$userid) == FALSE)
 ```
 We deleted the NAs that were in the column purch:
-```{r preprocessing NAs from variable purch}
+```{r Preprocessing NAs from variable purch}
   naPurch <- which(is.na(PR$purch)) ; naPurch
   PR <- PR[-naPurch, ]
 ```
 Finally, we changed the column purch that was formed by characters to a numerical one, deleting the EUR.
-```{r preprocessing variable purch}
+```{r Preprocessing variable purch}
   PR['purch'] <-  as.numeric(gsub("[a-zA-Z]","", PR$purch))
 ```
 
@@ -77,18 +77,6 @@ Finally, we changed the column purch that was formed by characters to a numerica
 
 Perform descriptive analytics of the datasets visually and numerically. To make this task simpler, we’ll do
 the analysis for each data set separately.
-```{r Descriptive Analytics}
-#install.packages("pastecs")
-#library(pastecs)
-#stat.desc(PR)
-#stat.desc(DS)
-
-#merge
-#library(dplyr)
-#usersDownload<-merge(DS,PR,by.x="userid",by.y="id")
-#unique(usersDownload$userid)
-
-```
 
 ### 3.1. Dataset “Cookie Cats AB Testing”
 #### 3.1.1 Users that downloaded the game
@@ -110,6 +98,7 @@ The next step was calculating the distribution of game rounds in the players’ 
   groupB <- DS$sum_gamerounds[DS$version == "gate_40"]
   boxplot(groupA, groupB, names = c("Group A", "Group B"))
 ```
+
 #### 3.1.4 Retention (day 1 and day 7)
 What is the value of retention at day 1? (percentage of users that are still active the day after
 installation).
@@ -160,11 +149,47 @@ ALTERNATIVE: gate 40 improves the engagement of the users
 ### 5.4 Conclusion of A/B testing
 
 ## 6. Regression analysis (paula :)
+In this section, we aim at answering Researh Question 9: “Can the amount of in-app purchases be related to the number of game rounds of the players?” Thus, we would like to investigate whether the amount of in-app purchases depends somehow on the number
+of game rounds. In order to answer this question, we will use the regression analysis.
+
+### 6.0 Merge the datasets
+First of all, we used the library dplyr in order to merge the two datasets into one. We included all the id from the “Cookie Cats AB Testing" and changed their NA values from purch into 0 EUR.
+```{r Merge datasets}
+  library(dplyr)
+  ds <-merge(DS,PR,by.x="userid",by.y="id", all.x = TRUE)
+  ds$purch[is.na(ds$purch)] <- 0
+```
 ### 6.1 Visual representation
+Represent visually the potential relationship between the total amount spent by the user and the number of game rounds.
+```{r Visual representation}
+  
+```
+
 ### 6.2 Building the model
+Develop the model with linear regression analysis and visualise the model. Explain how the model relates the total amount of purchases with the game rounds.
+```{r Building the model}
+  mylm <- lm(ds$purch ~ ds$sum_gamerounds, ds)
+  mylm
+```
+
 ### 6.3 Model fit
+Evaluate the quality of the model. Is it an accurate model?
+```{r Model fit}
+
+```
+
 ### 6.4 Predict a case
+Predict how much a user would spend if he/she has been playing 50 game rounds.
+```{r Predicting a case of 50 game rounds}
+
+```
+
 ### 6.5 Simulation
+Run a simulation of how much a player would spend for different game rounds, ranging from 0 until 1000,
+every 50 rounds. Build a table and draw a plot.
+```{r Simulation player spending for different game rounds}
+
+```
 
 ## 7. Dashboard (quien acabe antes :)
 
