@@ -139,7 +139,12 @@ KAKAKAK
 #### 3.2.1 Percentage of paying users
 
 ```{r Percentage of paying users}
-
+  num.users.DS <- nrow(DS) ; num.users.DS
+  num.users.PR <- nrow(PR) ; num.users.PR
+  PR.AND.DS.USERS <- sum(num.users.DS, num.users.PR) ; PR.AND.DS.USERS
+  
+  percentage.paying.users <- num.users.PR * 100 / PR.AND.DS.USERS ; percentage.paying.users
+  paste(as.character(round(percentage.paying.users, 2)), "%")
 ```
 
 ## 4. Monetization metrics (MARCEEEEEEEEEL :)
