@@ -161,29 +161,37 @@ In this section, we aim at answering Researh Question 9: “Can the amount of in
 of game rounds. In order to answer this question, we will use the regression analysis.
 
 ### 6.0 Merge the datasets
-First of all, we used the library dplyr in order to merge the two datasets into one. We included all the id from the “Cookie Cats AB Testing" and changed their NA values from purch into 0 EUR.
+First of all, we used the library dplyr in order to merge the two datasets. We decided to create two new datasets, one with all the population (merge.all) and another with just the users that did a purchase in the game (merge.purch), with the two datasets we will compare both models to know which has the best linear model. In the dataset with all the population we changed the NAs values from purch to 0 EUR.
 ```{r Merge datasets}
   library(dplyr)
-  ds <-merge(DS,PR,by.x="userid",by.y="id", all.x = TRUE)
-  ds$purch[is.na(ds$purch)] <- 0
+  merge.all <-merge(DS,PR,by.x="userid",by.y="id", all = TRUE)
+  merge.all$purch[is.na(merge.all$purch)] <- 0
+  
+  merge.purch = merge(DS,PR,by.x="userid",by.y="id")
 ```
 ### 6.1 Visual representation
 Represent visually the potential relationship between the total amount spent by the user and the number of game rounds.
 ```{r Visual representation}
-  
+  plot(merge.all$sum_gamerounds, merge.all$purch, xlab = "Number of Game Rounds", ylab = "Amount spent by user in EUR", main = "Relationship between the game rounds and the purchases")
 ```
 
 ### 6.2 Building the model
 Develop the model with linear regression analysis and visualise the model. Explain how the model relates the total amount of purchases with the game rounds.
 ```{r Building the model}
-  mylm <- lm(ds$purch ~ ds$sum_gamerounds, ds)
-  mylm
+  lm.all <- lm(merge.all$purch ~ merge.all$sum_gamerounds, merge.all)
+  lm.all
+
+  
+  lm.just.purch <- lm(merge.purch$purch ~ merge.purch$sum_gamerounds, merge.purch)
+  lm.just.purch
+
 ```
 
 ### 6.3 Model fit
 Evaluate the quality of the model. Is it an accurate model?
 ```{r Model fit}
-
+  summary(lm.all)
+  summary(lm.just.purch)
 ```
 
 ### 6.4 Predict a case
