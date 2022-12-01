@@ -181,42 +181,56 @@ First of all, we used the library dplyr in order to merge the two datasets. We d
   
   merge.purch = merge(DS,PR,by.x="userid",by.y="id")
 ```
+
 ### 6.1 Visual representation
-Represent visually the potential relationship between the total amount spent by the user and the number of game rounds.
+Before building the model, we have represented visually the potential relationship between the total amount spent by the user and the number of game rounds using a plot. 
 ```{r Visual representation}
-  plot(merge.all$sum_gamerounds, merge.all$purch, xlab = "Number of Game Rounds", ylab = "Amount spent by user in EUR", main = "Relationship between the game rounds and the purchases")
+  plot(merge.all$purch, merge.all$sum_gamerounds, ylab = "Number of Game Rounds", xlab = "Amount spent by user in EUR", main = "Relationship between the game rounds and the purchases")
 ```
 
+After looking at the results of the graph, we can intuit that there is no direct relationship between playing more rounds and spending more money in the game since, as the graph shows, the biggest purchases are made by those users who play between 0 and 700 rounds. All the users that have played more than approximately 1000 rounds have spent no money in the game.
+
 ### 6.2 Building the model
-Develop the model with linear regression analysis and visualise the model. Explain how the model relates the total amount of purchases with the game rounds.
+We have developed two models with linear regression analysis. One taking into account all users (lm.all) and the other taking into account only those who have made in-game purchases(lm.just.purch). 
 ```{r Building the model}
   lm.all <- lm(merge.all$purch ~ merge.all$sum_gamerounds, merge.all)
   lm.all
-
+  
+  plot(merge.all$sum_gamerounds, merge.all$purch, main = "lm.all")
+  abline(lm.all)
   
   lm.just.purch <- lm(merge.purch$purch ~ merge.purch$sum_gamerounds, merge.purch)
   lm.just.purch
+  
+  plot(merge.purch$sum_gamerounds, merge.purch$purch, main = "lm.just.purch")
+  abline(lm.just.purch)
 
 ```
 
+Visualise the model. Explain how the model relates the total amount of purchases with the game rounds.
+
 ### 6.3 Model fit
-Evaluate the quality of the model. Is it an accurate model?
+In order to evaluate the quality of the models, we used the function summary(). 
 ```{r Model fit}
   summary(lm.all)
   summary(lm.just.purch)
 ```
+Evaluate the quality of the model. 
+Is it an accurate model?
 
 ### 6.4 Predict a case
 Predict how much a user would spend if he/she has been playing 50 game rounds.
 ```{r Predicting a case of 50 game rounds}
-
+  invest <- 50
+  new.ds <- data.frame(sum_gamerounds=invest)
+  #predict(lm.all, new.ds)
 ```
 
 ### 6.5 Simulation
 Run a simulation of how much a player would spend for different game rounds, ranging from 0 until 1000,
 every 50 rounds. Build a table and draw a plot.
 ```{r Simulation player spending for different game rounds}
-
+  
 ```
 
 ## 7. Dashboard (quien acabe antes :)
