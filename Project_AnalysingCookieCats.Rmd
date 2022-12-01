@@ -140,11 +140,11 @@ KAKAKAK
 
 BLABLABLABLA
 ```{r Percentage of paying users}
-  num.users.DS <- nrow(DS) ; num.users.DS
-  num.users.PR <- nrow(PR) ; num.users.PR
-  PR.AND.DS.USERS <- sum(num.users.DS, num.users.PR) ; PR.AND.DS.USERS
+  num.users.DS <- nrow(DS)
+  num.users.PR <- nrow(PR)
+  PR.AND.DS.USERS <- sum(num.users.DS, num.users.PR)
   
-  percentage.paying.users <- num.users.PR * 100 / PR.AND.DS.USERS ; percentage.paying.users
+  percentage.paying.users <- num.users.PR * 100 / PR.AND.DS.USERS
   paste(as.character(round(percentage.paying.users, 2)), "%")
 ```
 MORE BLA BLA BLA
@@ -152,6 +152,12 @@ MORE BLA BLA BLA
   repeated <- length(table(PR$id))
   percentage.multiple.purchases <- repeated * 100 / num.users.PR
   paste(as.character(round(percentage.multiple.purchases, 2)), "%")
+```
+JFLKDSJLFAÑ
+```{r Mean and maximum of money spet}
+  mean <- mean(PR$purch) ; mean
+  # <- max(PR$purch) ; max esta mal, s'ha de mirar el maxim total de compres per usuari, no la compra mes cara
+  
 ```
 
 ## 4. Monetization metrics (MARCEEEEEEEEEL :)
