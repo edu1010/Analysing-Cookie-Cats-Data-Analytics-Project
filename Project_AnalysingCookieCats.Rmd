@@ -138,6 +138,7 @@ KAKAKAK
 ### 3.2 Dataset “Cookie Cats Purchases” (MARCEEEEEEEEEL :)
 #### 3.2.1 Percentage of paying users
 
+BLABLABLABLA
 ```{r Percentage of paying users}
   num.users.DS <- nrow(DS) ; num.users.DS
   num.users.PR <- nrow(PR) ; num.users.PR
@@ -145,6 +146,12 @@ KAKAKAK
   
   percentage.paying.users <- num.users.PR * 100 / PR.AND.DS.USERS ; percentage.paying.users
   paste(as.character(round(percentage.paying.users, 2)), "%")
+```
+MORE BLA BLA BLA
+```{r Percentage of people who has purchases more than 1 time}
+  repeated <- length(table(PR$id))
+  percentage.multiple.purchases <- repeated * 100 / num.users.PR
+  paste(as.character(round(percentage.multiple.purchases, 2)), "%")
 ```
 
 ## 4. Monetization metrics (MARCEEEEEEEEEL :)
