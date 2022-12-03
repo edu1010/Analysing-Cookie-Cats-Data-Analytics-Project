@@ -227,16 +227,19 @@ Is it an accurate model?
 ### 6.4 Predict a case
 Predict how much a user would spend if he/she has been playing 50 game rounds.
 ```{r Predicting a case of 50 game rounds}
-  invest <- 50
-  new.ds <- data.frame(sum_gamerounds=invest)
-  #predict(lm.all, new.ds)
+  prediction <- 50
+  new.ds <- data.frame(sum_gamerounds=prediction)
+  predict(lm.all, new.ds)
 ```
 
 ### 6.5 Simulation
 Run a simulation of how much a player would spend for different game rounds, ranging from 0 until 1000,
 every 50 rounds. Build a table and draw a plot.
 ```{r Simulation player spending for different game rounds}
-  
+  simulation.game.rounds <- seq(from = 0, to = 1000, by = 50)
+  new.ds <- data.frame(sum_gamerounds=simulation.game.rounds)
+  predicted.simulation <- predict(lm.all, new.ds)
+  predicted.simulation
 ```
 
 ## 7. Dashboard (quien acabe antes :)
