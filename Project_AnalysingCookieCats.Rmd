@@ -199,18 +199,18 @@ After looking at the results of the graph, we can intuit that there is no direct
 ### 6.2 Building the model
 We have developed two models with linear regression analysis. One taking into account all users (lm.all) and the other taking into account only those who have made in-game purchases(lm.just.purch). 
 ```{r Building the model}
-  lm.all <- lm(merge.all$purch ~ merge.all$sum_gamerounds, merge.all)
+  lm.all <- lm(purch ~ sum_gamerounds, merge.all)
   lm.all
+  
+  lm.just.purch <- lm(purch ~ sum_gamerounds, merge.purch)
+  lm.just.purch
   
   plot(merge.all$sum_gamerounds, merge.all$purch, main = "lm.all")
   abline(lm.all)
   
-  lm.just.purch <- lm(merge.purch$purch ~ merge.purch$sum_gamerounds, merge.purch)
-  lm.just.purch
-  
   plot(merge.purch$sum_gamerounds, merge.purch$purch, main = "lm.just.purch")
   abline(lm.just.purch)
-
+#supuestamente purch es mejor
 ```
 
 Visualise the model. Explain how the model relates the total amount of purchases with the game rounds.
@@ -227,9 +227,13 @@ Is it an accurate model?
 ### 6.4 Predict a case
 Predict how much a user would spend if he/she has been playing 50 game rounds.
 ```{r Predicting a case of 50 game rounds}
-  prediction <- 50
-  new.ds <- data.frame(sum_gamerounds=prediction)
-  predict(lm.all, new.ds)
+  fifty.gamerounds <- 50
+  new.ds <- data.frame(sum_gamerounds=fifty.gamerounds)
+  prediction = predict(lm.all, new.ds)
+  prediction
+  
+  prediction1 = predict(lm.just.purch, new.ds)
+  prediction1
 ```
 
 ### 6.5 Simulation
@@ -240,6 +244,9 @@ every 50 rounds. Build a table and draw a plot.
   new.ds <- data.frame(sum_gamerounds=simulation.game.rounds)
   predicted.simulation <- predict(lm.all, new.ds)
   predicted.simulation
+  
+  predicted.simulation.1 <- predict(lm.just.purch, new.ds)
+  predicted.simulation.1
 ```
 
 ## 7. Dashboard (quien acabe antes :)
