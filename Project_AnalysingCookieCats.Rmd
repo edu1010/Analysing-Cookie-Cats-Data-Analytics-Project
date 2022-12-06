@@ -167,6 +167,8 @@ In this section, we aim at answering Researh Question 8: “Does moving gate to 
 ### 5.1 Hypotheses
 NULL: gate 40 doesn't improve the engagement of the users
 ALTERNATIVE: gate 40 improves the engagement of the users
+null = sumGameRounds gate 40 <= sumGameRounds gate 30
+ALTERNATIVE = sumGameRounds gate 40 > sumGameRounds gate 30
 ### 5.2 Visualisation
 First of all we can see the diferent distribution between Group A (gate_30) and Group B (gate_40)
 ```{r Visualisation}
@@ -198,6 +200,13 @@ statistic, the p value, etc. You need to develop the full computations (you can 
 can’t use functions that already compute the full hypothesis testing
 
 The first of all we compare both group to decide to use unequal variance or equal variance
+```{r comparasion}
+length(DS$userid[DS$version=="gate_30"])
+length(DS$userid[DS$version=="gate_40"])
+  #stdev <- sqrt(sum((dataset$A)^2) / (length(dataset$A)-1))
+```
+
+we decide to use unequal variance
 ```{r computantion}
 meanGroupA<- mean(DS$sum_gamerounds[DS$version=="gate_30"] )
 meanGroupA
@@ -213,13 +222,29 @@ degreesOfFredom<-(s1^2/meanGroupA + s2^2/meanGroupB)^2 /
   ( ((s1^2/meanGroupA)^2/meanGroupA-1) + ((s2^2/meanGroupB)^2/(meanGroupB-1) ))
 degreesOfFredom
 ```
-
-```{r we decide to use unequal variance}
-length(DS$userid[DS$version=="gate_30"])
-length(DS$userid[DS$version=="gate_40"])
-  #stdev <- sqrt(sum((dataset$A)^2) / (length(dataset$A)-1))
+Comparasion observed value with normal distribution
+```{r comparasion}
+alpha = qt ( 0.05, df=degreesOfFredom,lower.tail=FALSE )#sumGameRounds40-sumGameRounds30>0 creo
+alpha
 ```
+The necesary condition to reject H0 is sumGameRounds gate 40 > sumGameRounds gate 30
+```{r tObs  and aplha}
+h0CanBeRejected<-Tobs>alpha
+h0CanBeRejected
+```
+Comprobation of the analysis
+```{r tObs  and aplha}
+p<-pt(Tobs,df=degreesOfFredom,lower.tail=FALSE)
+p
+alpha
+```
+To reject H0 p needs to be lower than alpha, in this case
+
+Alpha es lo que he puesto que es alpha estoy haciendo algo mal? no entiendo
+
 ### 5.4 Conclusion of A/B testing
+Since Tobs is in the aceptance area we can reject H0
+
 
 ## 6. Regression analysis (paula :)
 In this section, we aim at answering Researh Question 9: “Can the amount of in-app purchases be related to the number of game rounds of the players?” Thus, we would like to investigate whether the amount of in-app purchases depends somehow on the number
