@@ -163,15 +163,62 @@ JFLKDSJLFAÑ
 ## 4. Monetization metrics (MARCEEEEEEEEEL :)
 
 ## 5. A/B testing (edu :)
+In this section, we aim at answering Researh Question 8: “Does moving gate to level 40 improve engagement of the users significantly?
 ### 5.1 Hypotheses
 NULL: gate 40 doesn't improve the engagement of the users
 ALTERNATIVE: gate 40 improves the engagement of the users
 ### 5.2 Visualisation
-### 5.3 Computation
-```{r Computation}
-  #stdev <- sqrt(sum((dataset$A)^2) / (length(dataset$A)-1))
+First of all we can see the diferent distribution between Group A (gate_30) and Group B (gate_40)
+```{r Visualisation}
+ boxplot(groupA, groupB, names = c("Group A", "Group B"))
+```
+The next step we show is what is the percentatge  of max retention between group. We define max retention as, the retention the first day and day 7 both are true 
+```{r Visualisation}
+ GroupAtotalUsersRetention<-length(DS$userid[DS$retention_1=="TRUE" & DS$retention_7 =="TRUE" & DS$version == "gate_30"]) 
+ GroupBtotalUsersRetention<-length(DS$userid[DS$retention_1=="TRUE" & DS$retention_7 =="TRUE" & DS$version == "gate_40"])
+ totalUsersWithMaxRetention<- c(GroupAtotalUsersRetention,GroupBtotalUsersRetention)
+ pie(totalUsersWithMaxRetention,labels=c("Grup A (gate_30)","Group B (gate_40)"))
+
+```
+The next step we show is what is the percentatge  of the total of gamerounds for both groups
+```{r Visualisation}
+ GroupASumGameRounds<-sum(DS$sum_gamerounds[ DS$version == "gate_30"]) 
+ GroupBSumGameRounds<-sum(DS$sum_gamerounds[ DS$version == "gate_40"]) 
+
+ gameRoundsVector<- c(GroupASumGameRounds,GroupBSumGameRounds)
+ aTmp<-paste("Grup A (gate_30)",GroupASumGameRounds)
+ bTmp<-paste("Group B (gate_40)",GroupBSumGameRounds)
+ pie(gameRoundsVector,labels=c( aTmp, bTmp))
+
 ```
 
+### 5.3 Computation
+Apply the A/B testing hypothesis method, and compute and show all the necessary values: the observed
+statistic, the p value, etc. You need to develop the full computations (you can use mean and sd, but you
+can’t use functions that already compute the full hypothesis testing
+
+The first of all we compare both group to decide to use unequal variance or equal variance
+```{r computantion}
+meanGroupA<- mean(DS$sum_gamerounds[DS$version=="gate_30"] )
+meanGroupA
+meanGroupB<- mean(DS$sum_gamerounds[DS$version=="gate_40"] )
+meanGroupB
+s1<-sd(DS$sum_gamerounds[DS$version=="gate_30"])
+s2<-sd(DS$sum_gamerounds[DS$version=="gate_40"])
+
+Tobs<-(meanGroupA-meanGroupB)/sqrt(s1^2/meanGroupA + s2^2/meanGroupB)
+Tobs
+  #stdev <- sqrt(sum((dataset$A)^2) / (length(dataset$A)-1))
+degreesOfFredom<-(s1^2/meanGroupA + s2^2/meanGroupB)^2 /
+  ( ((s1^2/meanGroupA)^2/meanGroupA-1) + ((s2^2/meanGroupB)^2/(meanGroupB-1) ))
+degreesOfFredom
+```
+
+```{r we decide to use unequal variance}
+length(DS$userid[DS$version=="gate_30"])
+length(DS$userid[DS$version=="gate_40"])
+  #stdev <- sqrt(sum((dataset$A)^2) / (length(dataset$A)-1))
+```
 ### 5.4 Conclusion of A/B testing
 
 ## 6. Regression analysis (paula :)
