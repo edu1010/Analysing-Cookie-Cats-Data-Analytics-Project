@@ -68,17 +68,24 @@ In addition, we deleted the NAs that were in the column purch.
   naPurch <- which(is.na(PR$purch)) ; naPurch
   PR <- PR[-naPurch, ]
 ```
+
 Moreover, we changed the column purch that was formed by characters to a numerical one, deleting the EUR.
 ```{r Preprocessing variable purch}
   PR['purch'] <-  as.numeric(gsub("[a-zA-Z]","", PR$purch))
 ```
 
-Finally, we changed the negative values into positive because it didn't make sense to buy in negative.
+We changed the negative values into positive because it didn't make sense to buy in negative.
 ```{r Changing negative values into positive}
   PR$purch[PR$purch < 0] <- -(PR$purch[PR$purch < 0])
   unique(PR$purch)
 ```
+Finally, we detected that there were some ids that were repeated. We have interpreted that those users did more than one purch. We decided to sum both purch values and merge them in one row.
+```{r merging the users that did more than one purch}
+  group_by(PR, id)
+  ?summarise
 
+  # MIRAR ESTOOOOOOOO AQUI!!!!!!!!!!!!!!!!!!!!
+```
 
 
 ## 3. Descriptive Analytics
