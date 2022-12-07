@@ -99,12 +99,12 @@ the analysis for each data set separately.
 
 ### 3.1. Dataset “Cookie Cats AB Testing”
 #### 3.1.1 Users that downloaded the game
-There are 90.186 users that downloaded the Cookie Cats game.
+There are 90.185 users that downloaded the Cookie Cats game.
 ```{r Users that downloaded the games}
   nrow(DS)
 ```
 #### 3.1.2 Distribution of users in groups
-From the 90.186 users, 44699 played the gate number 30 and 45.487 played the gate number 40.
+From the 90.185 users, 44698 played the gate number 30 and 45.487 played the gate number 40.
 ```{r Distribution of users in groups}
   table(DS$version)
 ```
@@ -317,7 +317,7 @@ To reject H0 p needs to be lower than alpha, in this case
 Alpha es lo que he puesto que es alpha estoy haciendo algo mal? no entiendo
 
 ### 5.4 Conclusion of A/B testing
-Since Tobs is in the aceptance area we can reject H0
+Since Tobs is in the aceptance area we can reject H0 **falta añadir mas**
 
 
 ## 6. Regression analysis
@@ -329,7 +329,7 @@ First of all, we used the library dplyr in order to merge the two datasets. We d
 ```{r Merge datasets}
   library(dplyr)
   merge.all <-merge(DS,PR,by.x="userid",by.y="id", all = TRUE)
-  #merge.all$purch[is.na(merge.all$purch)] <- 0
+  merge.all$purch[is.na(merge.all$purch)] <- 0
   
   merge.purch = merge(DS,PR,by.x="userid",by.y="id")
 ```
@@ -340,7 +340,7 @@ Before building the model, we have represented visually the potential relationsh
   plot(merge.all$purch, merge.all$sum_gamerounds, ylab = "Number of Game Rounds", xlab = "Amount spent by user in EUR", main = "Relationship between the game rounds and the purchases")
 ```
 
-After looking at the results of the graph, we can intuit that there is no direct relationship between playing more rounds and spending more money in the game since, as the graph shows, the biggest purchases are made by those users who play between 0 and 700 rounds. All the users that have played more than approximately 1000 rounds have spent no money in the game.
+After looking at the results of the graph, we can observe that most of the users spend 0 EUR and play from 0 to 3000 game rounds. In the other side, the rest of the users play less than 250 game rounds and spend approximately between 0 and 200 EUR. The users that spend the most are not in the majority group, as the graph shows, their values are spread over the plot, disregarding some exceptions, these users play around 250 and 600 game rounds, and spend between 200 and 620 EUR. We can intuit that there is no a direct relationship between playing more game rounds and spending more money, because the users who play more rounds do not even spend 1 EUR.
 
 ### 6.2 Building the model
 We have developed two models with linear regression analysis. One taking into account all users (lm.all) and the other taking into account only those who have made in-game purchases(lm.just.purch). 
@@ -356,47 +356,62 @@ We have developed two models with linear regression analysis. One taking into ac
   
   plot(merge.purch$sum_gamerounds, merge.purch$purch, main = "lm.just.purch")
   abline(lm.just.purch)
-#supuestamente purch es mejor
 ```
 
-Visualise the model. Explain how the model relates the total amount of purchases with the game rounds.
+Visualise the model. Explain how the model relates the total amount of purchases with the game rounds. FALTA!!!!!!!
 
 ### 6.3 Model fit
-In order to evaluate the quality of the models, we used the function summary(). 
+In order to evaluate the quality of the models, we used the function summary(): 
 ```{r Model fit}
   summary(lm.all)
   summary(lm.just.purch)
 ```
-Evaluate the quality of the model. 
-Is it an accurate model?
+After looking at the results of the function summary(), the goodness of fit is given by the value of the R-squared, that is a measure of how close the data is to the fitted regression line.
+
+We can observe that the linear model formed by all the users (lm.all) has a R-squared of 0.009682 and the second linear model only formed by the users that realized purchases in the game (lm.just.purch) has a R-squared of 0.6727. The best R-square value is the second one, because it is the one nearest to 1, the maximum R-squared value.
+
+Finally, we can conclude that the best linear model is the one called lm.just.purch, only formed by the users that realized purchases in the game.
 
 ### 6.4 Predict a case
-Predict how much a user would spend if he/she has been playing 50 game rounds.
+We have predicted a case of how much a user would spend if he or she had been playing 50 game rounds. In the following code we realized the prediction, obtaining the result that the user would spend 38.61 EUR, based on the linear model made of the users that realized any purchase (lm.just.purch).
 ```{r Predicting a case of 50 game rounds}
   invest <- 50
   new.ds <- data.frame(sum_gamerounds=invest)
-  prediction = predict(lm.all, new.ds)
+  prediction = predict(lm.just.purch, new.ds)
+  prediction <- round(prediction, digits = 2)
   prediction
 ```
 
 ### 6.5 Simulation
-Run a simulation of how much a player would spend for different game rounds, ranging from 0 until 1000,
-every 50 rounds. Build a table and draw a plot.
+We have realized a simulation of how much a player would spend for different game rounds, ranging from 0 until 1000,
+every 50 rounds. To observe the results, we have created a table of the amount of game rounds and the total amount of money that the user would spend.
 ```{r Simulation player spending for different game rounds}
   simulation.gamerounds <- seq(from = 0, to = 1000, by = 50)
   new.ds <- data.frame(sum_gamerounds=simulation.gamerounds)
-  simulation <- predict(lm.all, new.ds)
-  simulation
+  simulation.purch <- predict(lm.just.purch, new.ds)
+  simulation.purch <- round(simulation.purch, digits = 2)
   
-  # incluir table
-  plot(simulation)
+  ds.simulation <- data.frame(simulation.gamerounds, simulation.purch)
+  names(ds.simulation)[1] <- "Game Rounds"
+  names(ds.simulation)[2] <- "Purch"
+    
+  knitr::kable(ds.simulation, "simple", align = "lccrr", caption = "Purch simulation from 0 until 1000 game rounds")
 ```
 
-## 7. Dashboard (quien acabe antes :)
+We also created a plot to have a visual representation of the evolution of the amount of purchases that the user does in relation to the number of game rounds that plays. We can observe that there is a clear relationship between the two variables, where the values increase in a linear way.
+```{r Plot for the simulation}
+  plot(ds.simulation, ylab = "Purch (EUR)", xlab = "Number of Game Rounds", main = "Purch simulation from 0 until 1000 game rounds")
+```
 
-## 8. Conclusion (todes :)
+## 7. Dashboard
 
-## 9. Team contribution (todes :)
 
-## 10. Non-cheating manifesto (todes :)
+## 8. Conclusion
+
+
+## 9. Team contribution
+
+
+## 10. Non-cheating manifesto
+
 
