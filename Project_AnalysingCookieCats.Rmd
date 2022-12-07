@@ -196,13 +196,14 @@ JFLKDSJLFAÑ
 
 ## 4. Monetization metrics (MARCEEEEEEEEEL :)
 ### 4.1. Conversion Rate
-In order to compute the conversion rate, we need to get how many people there are in 
+In order to compute the conversion rate, we need to compare the paying users with the total population of the game. We do it by dividing the length of PR table with the sum of the sum of both tables; PR and DS. In the PR table, we can't use nrow() because there are some id's that appear more than once. To solve that we just use length(table(PR)).
 ```{r Conversion rate}
-  num.users.DS <- nrow(DS)
-  num.users.PR <- nrow(PR)
+  num.users.DS <- nrow(DS) ; num.users.DS
+  num.users.PR <- length(table(PR)) ; num.users.PR
+  
   PR.AND.DS.USERS <- sum(num.users.DS, num.users.PR)
   
-  conversion.rate <- (num.users.PR / PR.AND.DS.USERS)
+  conversion.rate <- (num.users.PR / PR.AND.DS.USERS) * 100 ; conversion.rate
   paste(as.character(round(conversion.rate, 2)), "%")
 
 ```
