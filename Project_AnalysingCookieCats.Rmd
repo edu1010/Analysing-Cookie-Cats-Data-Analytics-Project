@@ -79,12 +79,16 @@ We changed the negative values into positive because it didn't make sense to buy
   PR$purch[PR$purch < 0] <- -(PR$purch[PR$purch < 0])
   unique(PR$purch)
 ```
-Finally, we detected that there were some ids that were repeated. We have interpreted that those users did more than one purch. We decided to sum both purch values and merge them in one row.
-```{r merging the users that did more than one purch}
-  group_by(PR, id)
-  ?summarise
+Finally, we detected that there were some ids that were repeated. We have interpreted that those users did more than one purch. We decided to sum both purch values and merge them in one row. 
 
-  # MIRAR ESTOOOOOOOO AQUI!!!!!!!!!!!!!!!!!!!!
+We duplicated the dataset in order to have the original without the merge for the descriptive analytics.
+```{r merging the users that did more than one purch}
+  library(dplyr)
+
+  PR.different.purch <- PR
+  PR <- PR %>% group_by(id) %>%
+  summarise(purch=sum(purch)) %>%
+  as.data.frame()
 ```
 
 
