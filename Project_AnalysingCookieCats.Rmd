@@ -82,7 +82,7 @@ We changed the negative values into positive because it didn't make sense to buy
 Finally, we detected that there were some ids that were repeated. We have interpreted that those users did more than one purch. We decided to sum both purch values and merge them in one row. 
 
 We duplicated the dataset in order to have the original without the merge for the descriptive analytics.
-```{r merging the users that did more than one purch}
+```{r Merging the users that did more than one purch}
   library(dplyr)
 
   PR.different.purch <- PR
@@ -242,7 +242,7 @@ First of all we can see the diferent distribution between Group A (gate_30) and 
  boxplot(groupA, groupB, names = c("Group A", "Group B"))
 ```
 The next step we show is what is the percentatge  of max retention between group. We define max retention as, the retention the first day and day 7 both are true 
-```{r Visualisation}
+```{r Visualisation part 2}
  GroupAtotalUsersRetention<-length(DS$userid[DS$retention_1=="TRUE" & DS$retention_7 =="TRUE" & DS$version == "gate_30"]) 
  GroupBtotalUsersRetention<-length(DS$userid[DS$retention_1=="TRUE" & DS$retention_7 =="TRUE" & DS$version == "gate_40"])
  totalUsersWithMaxRetention<- c(GroupAtotalUsersRetention,GroupBtotalUsersRetention)
@@ -250,7 +250,7 @@ The next step we show is what is the percentatge  of max retention between group
 
 ```
 The next step we show is what is the percentatge  of the total of gamerounds for both groups
-```{r Visualisation}
+```{r Visualisation part 3}
  GroupASumGameRounds<-sum(DS$sum_gamerounds[ DS$version == "gate_30"]) 
  GroupBSumGameRounds<-sum(DS$sum_gamerounds[ DS$version == "gate_40"]) 
 
@@ -267,7 +267,7 @@ statistic, the p value, etc. You need to develop the full computations (you can 
 can’t use functions that already compute the full hypothesis testing
 
 The first of all we compare both group to decide to use unequal variance or equal variance
-```{r comparasion}
+```{r Comparasion}
 length(DS$userid[DS$version=="gate_30"])
 length(DS$userid[DS$version=="gate_40"])
   #stdev <- sqrt(sum((dataset$A)^2) / (length(dataset$A)-1))
@@ -290,7 +290,7 @@ degreesOfFredom<-(s1^2/meanGroupA + s2^2/meanGroupB)^2 /
 degreesOfFredom
 ```
 Comparasion observed value with normal distribution
-```{r comparasion}
+```{r Comparasion part 2}
 alpha = qt ( 0.05, df=degreesOfFredom,lower.tail=FALSE )#sumGameRounds40-sumGameRounds30>0 creo
 alpha
 ```
@@ -300,7 +300,7 @@ h0CanBeRejected<-Tobs>alpha
 h0CanBeRejected
 ```
 Comprobation of the analysis
-```{r tObs  and aplha}
+```{r tObs  and aplha part 2}
 p<-pt(Tobs,df=degreesOfFredom,lower.tail=FALSE)
 p
 alpha
@@ -322,7 +322,7 @@ First of all, we used the library dplyr in order to merge the two datasets. We d
 ```{r Merge datasets}
   library(dplyr)
   merge.all <-merge(DS,PR,by.x="userid",by.y="id", all = TRUE)
-  merge.all$purch[is.na(merge.all$purch)] <- 0
+  #merge.all$purch[is.na(merge.all$purch)] <- 0
   
   merge.purch = merge(DS,PR,by.x="userid",by.y="id")
 ```
