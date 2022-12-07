@@ -203,8 +203,8 @@ In order to compute the conversion rate, we need to compare the paying users wit
   
   PR.AND.DS.USERS <- sum(num.users.DS, num.users.PR)
   
-  conversion.rate <- (num.users.PR / PR.AND.DS.USERS) * 100 ; conversion.rate
-  paste(as.character(round(conversion.rate, 2)), "%")
+  conversion.rate <- (num.users.PR / PR.AND.DS.USERS) * 100
+  paste(as.character(round(conversion.rate, 2)), "%") ; conversion.rate
 
 ```
 ```{r ARPU}
