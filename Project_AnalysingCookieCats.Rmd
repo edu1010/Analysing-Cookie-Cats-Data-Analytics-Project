@@ -246,7 +246,7 @@ Alpha es lo que he puesto que es alpha estoy haciendo algo mal? no entiendo
 Since Tobs is in the aceptance area we can reject H0
 
 
-## 6. Regression analysis (paula :)
+## 6. Regression analysis
 In this section, we aim at answering Researh Question 9: “Can the amount of in-app purchases be related to the number of game rounds of the players?” Thus, we would like to investigate whether the amount of in-app purchases depends somehow on the number
 of game rounds. In order to answer this question, we will use the regression analysis.
 
@@ -299,26 +299,23 @@ Is it an accurate model?
 ### 6.4 Predict a case
 Predict how much a user would spend if he/she has been playing 50 game rounds.
 ```{r Predicting a case of 50 game rounds}
-  fifty.gamerounds <- 50
-  new.ds <- data.frame(sum_gamerounds=fifty.gamerounds)
+  invest <- 50
+  new.ds <- data.frame(sum_gamerounds=invest)
   prediction = predict(lm.all, new.ds)
   prediction
-  
-  prediction1 = predict(lm.just.purch, new.ds)
-  prediction1
 ```
 
 ### 6.5 Simulation
 Run a simulation of how much a player would spend for different game rounds, ranging from 0 until 1000,
 every 50 rounds. Build a table and draw a plot.
 ```{r Simulation player spending for different game rounds}
-  simulation.game.rounds <- seq(from = 0, to = 1000, by = 50)
-  new.ds <- data.frame(sum_gamerounds=simulation.game.rounds)
-  predicted.simulation <- predict(lm.all, new.ds)
-  predicted.simulation
+  simulation.gamerounds <- seq(from = 0, to = 1000, by = 50)
+  new.ds <- data.frame(sum_gamerounds=simulation.gamerounds)
+  simulation <- predict(lm.all, new.ds)
+  simulation
   
-  predicted.simulation.1 <- predict(lm.just.purch, new.ds)
-  predicted.simulation.1
+  # incluir table
+  plot(simulation)
 ```
 
 ## 7. Dashboard (quien acabe antes :)
