@@ -100,8 +100,8 @@ First of all, we used the library dplyr in order to merge the two datasets. We d
   
   merge.purch = merge(DS,PR,by.x="userid",by.y="id")
   
-  write.csv(merge.all,"D:/uni/QUART/merged_dataset.csv", row.names = FALSE)
-  write.csv(merge.purch,"D:/uni/QUART/merged_justpurch_dataset.csv", row.names = FALSE)
+  #write.csv(merge.all,"D:/uni/QUART/merged_dataset.csv", row.names = FALSE)
+  #write.csv(merge.purch,"D:/uni/QUART/merged_justpurch_dataset.csv", row.names = FALSE)
 ```
 
 ## 3. Descriptive Analytics
@@ -445,7 +445,7 @@ In conclusion, !!!!!!!!!FALTAA!!!!!!!!!
 Write a summary of your analysis, as if you were answering the questions to the designers. Be concise, clear, and use the right terminology.
 
 1. How many users downloaded the game?
-90185 users download the game.
+90185 users downloaded the game.
 
 2. Are the two groups of users well balanced in terms of number of players that got version A and version
 B of the game?
@@ -524,7 +524,7 @@ Eduard Corral:
 - Conclusions.
 
 ## 10. Non-cheating manifesto
-Finally, on behalf of the authors of this project, Marcel Feliu, Paula Ros and Eduard Corral, we commit ourselves that we have not made any kind of cheat, creating every part of this final project with our own knowledge and abilites.
+Finally, on behalf of the authors of this project, Marcel Feliu, Paula Ros and Eduard Corral, we commit ourselves that we have not made any kind of cheat, creating every part of this final project with our own knowledge and abilities.
 
 
 
