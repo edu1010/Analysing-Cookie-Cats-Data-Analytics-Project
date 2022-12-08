@@ -99,6 +99,9 @@ First of all, we used the library dplyr in order to merge the two datasets. We d
   merge.all$purch[is.na(merge.all$purch)] <- 0
   
   merge.purch = merge(DS,PR,by.x="userid",by.y="id")
+  
+  write.csv(merge.all,"D:/uni/QUART/merged_dataset.csv", row.names = FALSE)
+  write.csv(merge.purch,"D:/uni/QUART/merged_justpurch_dataset.csv", row.names = FALSE)
 ```
 
 ## 3. Descriptive Analytics
