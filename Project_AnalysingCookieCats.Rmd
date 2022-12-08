@@ -399,11 +399,61 @@ We also created a plot to have a visual representation of the evolution of the a
 
 
 ## 8. Conclusion
+In conclusion, 
 
+Write a summary of your analysis, as if you were answering the questions to the designers. Be concise, clear, and use the right terminology.
 
 ## 9. Team contribution
+In order to realize this final project, first of all, one member of the group created the Rmd file, created the structure of the project and realized the first section called "1. Getting to know the datasets".
 
+Then, in class, we decided to realize the second section of the project, the preprocessing, collectively, in order to take advantage of the free time of the data analysis class.
+
+After finishing this part, we divided the following four sections (descriptive analytics, monetization metrics, A/B testing and regression analysis) among the three members of the team, in order to make the best use of our time and, at the same time, helping each other with any problem or doubt.
+
+After developing those sections, we realized the dashboard and conclusion jointly too again, in order to end the project together and understand every part of the work by sharing the different results.
+
+In summary, the different parts that realized each member are the following ones:
+
+Marcel Feliu Saperas:
+
+- Preprocessing.
+
+- Descriptive Analytics (part 3.1 and 3.2)
+
+- Monetization metrics.
+
+- Dashboard.
+
+- Conclusions.
+
+Paula Ros Márquez:
+
+- Getting to know the datasets.
+
+- Preprocessing.
+
+- Descriptive Analytics (part 3.1)
+
+- Regression Analysis.
+
+- Dashboard.
+
+- Conclusions.
+
+Eduard Corral:
+
+- Preprocessing.
+
+- Descriptive Analytics (part 3.1)
+
+- A/B testing.
+
+- Dashboard.
+
+- Conclusions.
 
 ## 10. Non-cheating manifesto
+Finally, on behalf of the authors of this project, Marcel Feliu, Paula Ros and Eduard Corral, we commit ourselves that we have not made any kind of cheat, creating every part of this final project with our own knowledge and abilites.
+
 
 
