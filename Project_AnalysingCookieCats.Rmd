@@ -328,7 +328,7 @@ The necessary condition to reject H0 is sumGameRounds gate 40 > sumGameRounds ga
 h0CanBeRejected<-Tobs>Talpha
 h0CanBeRejected
 ```
-Verification of the analysis
+For verification of the analysis we do a double check, now using the pvalue and alpha to see if the results are the same
 ```{r tObs  and aplha part 2}
 p<-pt(Tobs,df=degreesOfFredom,lower.tail=FALSE)
 p
@@ -339,9 +339,7 @@ canRejectH0WithPvalue
 To reject H0 p needs to be lower than alpha, in this case H0 can't be rejected
 
 ### 5.4 Conclusion of A/B testing
-Since Tobs isn't in the aceptance area we can't reject H0
-
-faltaria añadir minima justificacion!!!!!!!!!!! Based on the numbers computed before, conclude whether you can reject the null hypothesis or not. And then, answer the research question. Justify your answer.
+Since Tobs isn't in the acceptance area, we can't reject H0. This indicates that we don't have enough evidence to say that adding the gate_40 the engagement is improved.
 
 ## 6. Regression analysis
 In this section, we aim at answering Researh Question 9: “Can the amount of in-app purchases be related to the number of game rounds of the players?” Thus, we would like to investigate whether the amount of in-app purchases depends somehow on the number of game rounds. In order to answer this question, we will use the regression analysis.
