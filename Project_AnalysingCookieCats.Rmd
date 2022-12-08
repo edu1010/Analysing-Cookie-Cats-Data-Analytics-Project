@@ -174,7 +174,6 @@ To do the descriptive analysis we start by computing how many and the percentage
   myLables <- c("2,29$ ", "10,99$ ", "21,99$ ", "54,99$ ", "109,99$ ")
   myLables2 <- paste(round(purch.quantities),"%", sep = "")
   myLables2
-  
   myLables3 <- paste(myLables, myLables2)
   
   barplot(purch.quantities, names = myLables, col = cm.colors(length(purch.quantities)), legend.text = myLables3, ylim = c(0, 50), main = "Percentage Purchase Quantities", ylab = "Amount of purchases", las = 1)
@@ -185,7 +184,7 @@ To do the descriptive analysis we start by computing how many and the percentage
 The next thing we want to see is how many people has made purchases more than one time. To do that we first compute how many people id appear more than one time in the table. Once with that number, we can just calculate the percentage by multiplying it for 100 and then dividing it for the total number of users that have made any purchase. Finally, we can use a pie chart to make it more visual.
 
 ```{r Percentage of people who has purchases more than 1 time}
-  repeated <- length(table(PR$id))
+  repeated <- length(table(PR.different.purch$id)) ; repeated
   percentage.multiple.purchases <- repeated * 100 / num.users.PR
   pct.paying.users <- (num.users.PR-repeated) * 100 / num.users.PR ; pct.paying.users
   
@@ -196,15 +195,14 @@ The next thing we want to see is how many people has made purchases more than on
   lable3 <- paste(lable1, lable2) ; lable3
   
   pie(c(pct.paying.users, percentage.multiple.purchases), lable3, main = "Multiple Purchase Percentage")
-  
-  
 ```
 JFLKDSJLFAÑ
 ```{r Mean and maximum of money spet}
-  mean <- mean(PR$purch) ; mean
-  #
+  mean <- mean(PR$purch); mean
+  max <- max(PR$purch); max
+  min <- min(PR$purch)
   
-  
+  top3.max.purchase <- round(sort(PR$purch, decreasing = TRUE),)[1:3]
 ```
 
 ## 4. Monetization metrics (MARCEEEEEEEEEL :)
