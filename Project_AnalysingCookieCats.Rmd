@@ -363,10 +363,10 @@ canRejectH0WithPvalue
 To reject H0 p needs to be lower than alpha, in this case H0 can't be rejected
 
 ### 5.4 Conclusion of A/B testing
-Since Tobs isn't in the acceptance area, we can't reject H0. This indicates that we don't have enough evidence to say that adding the gate_40 the engagement is improved.
+Since Tobs isn't in the acceptance area, we can't reject H0. This indicates that we don't have enough evidence to say that moving the gate to the level 40 the engagement will improve.
 
 ## 6. Regression analysis
-In this section, we aim at answering Researh Question 9: “Can the amount of in-app purchases be related to the number of game rounds of the players?” Thus, we would like to investigate whether the amount of in-app purchases depends somehow on the number of game rounds. In order to answer this question, we will use the regression analysis.
+In this section, we aim at answering Research Question 9: “Can the amount of in-app purchases be related to the number of game rounds of the players?” Thus, we would like to investigate whether the amount of in-app purchases depends somehow on the number of game rounds. In order to answer this question, we will use the regression analysis.
 
 In this analysis we will use the merged datasets called merge.all and merge.purch, created in the 2.3 section.
 
