@@ -185,7 +185,11 @@ To do the descriptive analysis we start by computing how many and the percentage
 The next thing we want to see is how many people has made purchases more than one time. To do that we first compute how many people id appear more than one time in the table. Once with that number, we can just calculate the percentage by multiplying it for 100 and then dividing it for the total number of users that have made any purchase. Finally, we can use a pie chart to make it more visual.
 
 ```{r Percentage of people who has purchases more than 1 time}
+<<<<<<< HEAD
   repeated <- length(table(PR$id))
+=======
+  repeated <- length(table(PR.different.purch$id)) ; repeated
+>>>>>>> 93ea144fcc0565ebd43dcc53a8820de601582362
   percentage.multiple.purchases <- repeated * 100 / num.users.PR
   pct.paying.users <- (num.users.PR-repeated) * 100 / num.users.PR ; pct.paying.users
   
@@ -202,7 +206,12 @@ The next thing we want to see is how many people has made purchases more than on
 JFLKDSJLFAÑ
 ```{r Mean and maximum of money spet}
   mean <- mean(PR$purch) ; mean
+<<<<<<< HEAD
   #
+=======
+  max <- max(PR$purch) ; max
+  min <- min(PR$purch)
+>>>>>>> 93ea144fcc0565ebd43dcc53a8820de601582362
   
   
 ```
