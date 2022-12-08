@@ -473,7 +473,10 @@ dataset with all the population we changed the NAs values from purch to
   merge.all &lt;-merge(DS,PR,by.x=&quot;userid&quot;,by.y=&quot;id&quot;, all = TRUE)
   merge.all$purch[is.na(merge.all$purch)] &lt;- 0
   
-  merge.purch = merge(DS,PR,by.x=&quot;userid&quot;,by.y=&quot;id&quot;)</code></pre>
+  merge.purch = merge(DS,PR,by.x=&quot;userid&quot;,by.y=&quot;id&quot;)
+  
+  #write.csv(merge.all,&quot;D:/uni/QUART/merged_dataset.csv&quot;, row.names = FALSE)
+  #write.csv(merge.purch,&quot;D:/uni/QUART/merged_justpurch_dataset.csv&quot;, row.names = FALSE)</code></pre>
 </div>
 </div>
 <div id="descriptive-analytics" class="section level2">
@@ -530,10 +533,12 @@ are still active after one week of installation).</p>
 </div>
 <div id="are-there-non-playing-users" class="section level4">
 <h4>3.1.5 Are there non-playing users?</h4>
-<p>ESCRIBIR</p>
+<p>To see if there are non-playing users, we look for those who had both
+retention at day 1 and at day 7 as FALSE.</p>
 <pre class="r"><code>  non.playing.users &lt;- sum(DS$retention_1 == FALSE &amp; DS$retention_7 == FALSE) ; non.playing.users</code></pre>
 <pre><code>## [1] 46436</code></pre>
-<p>KAKAKAK</p>
+<p>Finally, to compute the percentage, we just have to multiply the
+non-playing users for 100 and then divide it for the total users.</p>
 <pre class="r"><code>  percentageNonPlayingUsers &lt;- non.playing.users * 100 / totalUsers
   paste(as.character(round(percentageNonPlayingUsers, 2)),&quot;%&quot;)</code></pre>
 <pre><code>## [1] &quot;51.49 %&quot;</code></pre>
@@ -1067,6 +1072,34 @@ in a linear way.</p>
 <p>Write a summary of your analysis, as if you were answering the
 questions to the designers. Be concise, clear, and use the right
 terminology.</p>
+<ol style="list-style-type: decimal">
+<li><p>How many users downloaded the game? 90185 users downloaded the
+game.</p></li>
+<li><p>Are the two groups of users well balanced in terms of number of
+players that got version A and version B of the game? From the 90.185
+users, 44698 played the gate number 30 and 45.487 played the gate number
+40. Which this data we can conclude the groups are balanced in term of
+number of players.</p></li>
+<li><p>What is the distribution of game rounds in the players’
+population? And among the users of version A and version B of the game
+separately?</p></li>
+<li><p>What is the value of retention at day 1? (percentage of users
+that are still active the day after installation). The percentage of
+retention at day 1 is: 44.521%</p></li>
+<li><p>What is the value of retention at day 7? (percentage of users
+that are still active after one week of installation). The percentage of
+retention at day 7 is: 14.617%</p></li>
+<li><p>Are there users that never played the game? How many? In what
+percentage? Yes. There are 46436 that never played the game. This is the
+51.49% againsts all the users that downloaded the game.</p></li>
+<li><p>What are the values of the most prominent monetisation
+metrics?</p></li>
+<li><p>Does moving gate to level 40 improve engagement of the users
+significantly? No. We don’t have enough evidence to conclude any
+improvement moving gate lo level 40</p></li>
+<li><p>Can the amount of in-app purchases be related to the number of
+game rounds of the players?</p></li>
+</ol>
 </div>
 <div id="team-contribution" class="section level2">
 <h2>9. Team contribution</h2>
@@ -1117,7 +1150,7 @@ following ones:</p>
 <p>Finally, on behalf of the authors of this project, Marcel Feliu,
 Paula Ros and Eduard Corral, we commit ourselves that we have not made
 any kind of cheat, creating every part of this final project with our
-own knowledge and abilites.</p>
+own knowledge and abilities.</p>
 </div>
 
 
