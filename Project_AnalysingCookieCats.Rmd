@@ -177,8 +177,8 @@ The next thing we want to see is how many people has made purchases more than on
 
 ```{r Percentage of people who has purchases more than 1 time}
   repeated <- length(table(PR.different.purch$id)) ; repeated
-  percentage.multiple.purchases <- repeated * 100 / PR.different.purch
-  pct.paying.users <- (PR.different.purch-repeated) * 100 / PR.different.purch ; pct.paying.users
+  percentage.multiple.purchases <- repeated * 100 / num.users.PR
+  pct.paying.users <- (num.users.PR-repeated) * 100 / num.users.PR ; pct.paying.users
   
   total.pct <- c(pct.paying.users, percentage.multiple.purchases)
   
@@ -194,7 +194,7 @@ The next thing we want to see is how many people has made purchases more than on
 JFLKDSJLFAÑ
 ```{r Mean and maximum of money spent}
   mean <- mean(PR$purch) ; mean
-  max <- max(PR$purch)
+  max <- max(PR$purch) ; max
   min <- min(PR$purch)
   
   top3.max.purchase <- round(sort(PR$purch, decreasing = TRUE),)[1:3]
