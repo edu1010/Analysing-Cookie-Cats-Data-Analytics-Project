@@ -248,6 +248,7 @@ To see the amount of money spent by paying user, we just have to divide the tota
 ```{r ARPPU}
   ARPPU <- total.revenue / num.users.PR
   ARPPU <- round(ARPPU, digit = 2) ; ARPPU
+  ARPPU.pct <- ARPPU * 100 / num.users.PR ; ARPPU.pct
 
 ```
 We did a simple table with the Kable function to show the data.
@@ -306,8 +307,8 @@ In the following pie chart, we can observe the different percentages of maximum 
 
 In the following pie chart, we show is what is the percentage of the total of game rounds played by each group:
 ```{r Visualisation part 3}
- GroupASumGameRounds<-sum(DS$sum_gamerounds[ DS$version == "gate_30"]) 
- GroupBSumGameRounds<-sum(DS$sum_gamerounds[ DS$version == "gate_40"]) 
+ GroupASumGameRounds<-sum(DS$sum_gamerounds[ DS$version == "gate_30"]) ; GroupASumGameRounds
+ GroupBSumGameRounds<-sum(DS$sum_gamerounds[ DS$version == "gate_40"]) ; GroupBSumGameRounds
 totalGameRounds <- GroupASumGameRounds+GroupBSumGameRounds
  gameRoundsVector<- c(GroupASumGameRounds,GroupBSumGameRounds)
  aTmp<-paste("Group A (gate_30)",round(GroupASumGameRounds/totalGameRounds,digits = 4)*100,"%")
@@ -443,38 +444,15 @@ We also created a plot to have a visual representation of the evolution of the a
 
 
 ## 8. Conclusion
-In conclusion, !!!!!!!!!FALTAA!!!!!!!!!
+In conclusion, there were 90.185 users that downloaded the game. Those users were distributed in two groups of similar size, Group A (gate 30); with 44.698 players (50,6%) and Group B (gate 40); with 45.487 players (49,4%).
+The number of game rounds played was 2.294.854 (49,58%) for group A and 2.333.460 (50,42%) for group B.
 
-Write a summary of your analysis, as if you were answering the questions to the designers. Be concise, clear, and use the right terminology.
+The percentage of the retention at day one was 44,52% while the retention at the day 7 decayed up to 14,62%, and 46,436 users never played the game, which is more than the half of the players (51,49%).
 
-1. How many users downloaded the game?
-90185 users downloaded the game.
+The conversion rate is average and the ARPU is really low. The most prominent metric of monetization is the ARPPU; which is about 6,5%. The average ARPPU for mobile games is around 5%, so in this game is 1,5% higher than average. That means that in this game there is a small amount of people that purchase in the game but those people spend more than the average.
 
-2. Are the two groups of users well balanced in terms of number of players that got version A and version
-B of the game?
-From the 90.185 users, 44698 played the gate number 30 and 45.487 played the gate number 40.
-Which this data we can conclude the groups are balanced in term of number of players.
+We couldn't have enough evidence to conclude that moving the gate from the level 30 to the level 40 make any improve. The same happens with the relation between game rounds and purchases. By the result we can't intuit that there is a direct relationship between these two variables.
 
-3. What is the distribution of game rounds in the players’ population? And among the users of version A FALTA<====================
-and version B of the game separately?
-
-4. What is the value of retention at day 1? (percentage of users that are still active the day after
-installation).
-The percentage of retention at day 1 is: 44.521%
-
-5. What is the value of retention at day 7? (percentage of users that are still active after one week of
-installation).
-The percentage of retention at day 7 is: 14.617%
-
-6. Are there users that never played the game? How many? In what percentage?
-Yes. There are 46436 that never played the game. This is the 51.49% againsts all the users that downloaded the game.
-
-7. What are the values of the most prominent monetisation metrics?  FALTA<====================
-
-8. Does moving gate to level 40 improve engagement of the users significantly?
-No. We don't have enough evidence to conclude any improvement moving gate lo level 40
-
-9. Can the amount of in-app purchases be related to the number of game rounds of the players?  FALTA<====================
 
 
 ## 9. Team contribution
