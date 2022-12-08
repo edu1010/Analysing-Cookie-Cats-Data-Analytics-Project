@@ -99,9 +99,6 @@ First of all, we used the library dplyr in order to merge the two datasets. We d
   merge.all$purch[is.na(merge.all$purch)] <- 0
   
   merge.purch = merge(DS,PR,by.x="userid",by.y="id")
-  
-  #write.csv(merge.all,"D:/uni/QUART/merged_dataset.csv", row.names = FALSE)
-  #write.csv(merge.purch,"D:/uni/QUART/merged_justpurch_dataset.csv", row.names = FALSE)
 ```
 
 ## 3. Descriptive Analytics
@@ -379,22 +376,28 @@ Before building the model, we have represented visually the potential relationsh
 After looking at the results of the graph, we can observe that most of the users spend 0 EUR and play from 0 to 3000 game rounds. In the other side, the rest of the users play less than 250 game rounds and spend approximately between 0 and 200 EUR. The users that spend the most are not in the majority group, as the graph shows, their values are spread over the plot, disregarding some exceptions, these users play around 250 and 600 game rounds, and spend between 200 and 620 EUR. We can intuit that there is no a direct relationship between playing more game rounds and spending more money, because the users who play more rounds do not even spend 1 EUR.
 
 ### 6.2 Building the model
-We have developed two models with linear regression analysis. One taking into account all users (lm.all) and the other taking into account only those who have made in-game purchases(lm.just.purch). 
+We have developed two models with linear regression analysis. One taking into account all users (lm.all) and the other taking into account only those who have made in-game purchases(lm.just.purch). We can observe that the coefficients of the two linear models have completely different values, the linear model made of just the users that realize purchases has a higher coefficient (3.69>0.11) than the other.
 ```{r Building the model}
   lm.all <- lm(purch ~ sum_gamerounds, merge.all)
   lm.all
   
   lm.just.purch <- lm(purch ~ sum_gamerounds, merge.purch)
   lm.just.purch
-  
-  plot(merge.all$sum_gamerounds, merge.all$purch, main = "lm.all")
+```
+In the following plots we can visualise the two linear models. 
+```{r visualise the model}
+  plot(merge.all$sum_gamerounds, merge.all$purch, main = "Linear Model 1 (lm.all)", ylab = "Purch", xlab = "Game Rounds")
   abline(lm.all)
   
-  plot(merge.purch$sum_gamerounds, merge.purch$purch, main = "lm.just.purch")
+  plot(merge.purch$sum_gamerounds, merge.purch$purch, main = "Linear Model 2 (lm.just.purch)", ylab = "Purch", xlab = "Game Rounds")
   abline(lm.just.purch)
 ```
 
-Visualise the model. Explain how the model relates the total amount of purchases with the game rounds. FALTA!!!!!!!!!!!!!!!!!!!!
+Through the two graphs, we can observe that the models relate to the total amount of purchases with the game rounds in a different way. 
+
+In the first plot made with all the users, the line in the graph has a very low slope compared to the second plot made of just the users that realize purchases, which has a high slope. 
+
+This means that if the only take into account the users that realize purchases, there is a linear relation between playing more game rounds and spending more money but, if we take into account all the users and not just the ones that realize in-app purchases, we can observe that there is not a linear relation between this variables, just the opposite, the players that play more game rounds don't spend a single EUR.
 
 ### 6.3 Model fit
 In order to evaluate the quality of the models, we used the function summary(): 
@@ -406,7 +409,7 @@ After looking at the results of the function summary(), the goodness of fit is g
 
 We can observe that the linear model formed by all the users (lm.all) has a R-squared of 0.009682 and the second linear model only formed by the users that realized purchases in the game (lm.just.purch) has a R-squared of 0.6727. The best R-square value is the second one, because it is the one nearest to 1, the maximum R-squared value.
 
-Finally, we can conclude that the best linear model is the one called lm.just.purch, only formed by the users that realized purchases in the game.
+Finally, we can conclude that the best linear model is the one called lm.just.purch, only formed by the users that realized purchases in the game. For this reason, we will use this linear model for the sections 6.4 and 6.5.
 
 ### 6.4 Predict a case
 We have predicted a case of how much a user would spend if he or she had been playing 50 game rounds. In the following code we realized the prediction, obtaining the result that the user would spend 38.61 EUR, based on the linear model made of the users that realized any purchase (lm.just.purch).
@@ -440,11 +443,9 @@ We also created a plot to have a visual representation of the evolution of the a
 ```
 
 ## 7. Dashboard
-
+The dashboard has been realized in Tableau and it has been attached in a pdf file.
 
 ## 8. Conclusion
-In conclusion, !!!!!!!!!FALTAA!!!!!!!!!
-
 Write a summary of your analysis, as if you were answering the questions to the designers. Be concise, clear, and use the right terminology.
 
 1. How many users downloaded the game?
@@ -474,8 +475,8 @@ Yes. There are 46436 that never played the game. This is the 51.49% againsts all
 8. Does moving gate to level 40 improve engagement of the users significantly?
 No. We don't have enough evidence to conclude any improvement moving gate lo level 40
 
-9. Can the amount of in-app purchases be related to the number of game rounds of the players?  FALTA<====================
-
+9. Can the amount of in-app purchases be related to the number of game rounds of the players?
+if we only take into account the users that realize purchases, there is a linear relation between playing more game rounds and spending more money but, if we take into account all the users and not just the ones that realize in-app purchases, we can observe that there is not a linear relation between this variables, just the opposite, the players that play more game rounds don't spend a single EUR.
 
 ## 9. Team contribution
 In order to realize this final project, first of all, one member of the group created the Rmd file, created the structure of the project and realized the first section called "1. Getting to know the datasets".
@@ -488,7 +489,7 @@ After developing those sections, we realized the dashboard and conclusion jointl
 
 In summary, the different parts that realized each member are the following ones:
 
-Marcel Feliu Saperas:
+Marcel Feliu:
 
 - Preprocessing.
 
@@ -500,7 +501,7 @@ Marcel Feliu Saperas:
 
 - Conclusions.
 
-Paula Ros Márquez:
+Paula Ros:
 
 - Getting to know the datasets.
 
