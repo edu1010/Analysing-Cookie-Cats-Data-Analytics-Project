@@ -145,11 +145,11 @@ installation).
 ```
 
 #### 3.1.5 Are there non-playing users?
-ESCRIBIR
+To see if there are non-playing users, we look for those who had both retention at day 1 and at day 7 as FALSE.
 ```{r Sum non-playing users}
   non.playing.users <- sum(DS$retention_1 == FALSE & DS$retention_7 == FALSE) ; non.playing.users
 ```
-KAKAKAK
+Finally, to compute the percentage, we just have to multiply the non-playing users for 100 and then divide it for the total users.
 ```{r Percentage non-playing users}
   percentageNonPlayingUsers <- non.playing.users * 100 / totalUsers
   paste(as.character(round(percentageNonPlayingUsers, 2)),"%")
