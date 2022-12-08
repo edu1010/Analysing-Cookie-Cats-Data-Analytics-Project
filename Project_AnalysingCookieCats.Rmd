@@ -424,7 +424,7 @@ In conclusion, !!!!!!!!!FALTAA!!!!!!!!!
 Write a summary of your analysis, as if you were answering the questions to the designers. Be concise, clear, and use the right terminology.
 
 1. How many users downloaded the game?
-90185 users download the game
+90185 users download the game.
 
 2. Are the two groups of users well balanced in terms of number of players that got version A and version
 B of the game?
@@ -436,11 +436,11 @@ and version B of the game separately?
 
 4. What is the value of retention at day 1? (percentage of users that are still active the day after
 installation).
-44.521%
+The percentage of retention at day 1 is: 44.521%
 
 5. What is the value of retention at day 7? (percentage of users that are still active after one week of
 installation).
-14.617%
+The percentage of retention at day 7 is: 14.617%
 
 6. Are there users that never played the game? How many? In what percentage?
 Yes. There are 46436 that never played the game. This is the 51.49% againsts all the users that downloaded the game.
