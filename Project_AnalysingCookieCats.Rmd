@@ -155,7 +155,7 @@ KAKAKAK
   paste(as.character(round(percentageNonPlayingUsers, 2)),"%")
 ```
 
-### 3.2 Dataset “Cookie Cats Purchases” (MARCEEEEEEEEEL :)
+### 3.2 Dataset “Cookie Cats Purchases”
 #### 3.2.1 Percentage purchase quantities
 To do the descriptive analysis we start by computing how many and the percentage of each purchase quantity. To do so, we get how many purchases of the same amount are made. After that, we can easily compute the percentage of each purchase amount. Once we finished we used a barplot to show the data.
 
@@ -206,7 +206,7 @@ JFLKDSJLFAÑ
   boxplot(merge.purch$purch ~ merge.purch$version, main = "Purchases related with Version", xlab="Version", ylab="Money spent", col="orange", border="brown", las = 1)
 ```
 
-## 4. Monetization metrics (MARCEEEEEEEEEL :)
+## 4. Monetization metrics
 ### 4.1. Conversion Rate
 In order to compute the conversion rate, we need to compare the paying users with the total population of the game. We do it by dividing the length of PR table with the sum of the sum of both tables; PR and DS. In the PR table, we can't use nrow() because there are some id's that appear more than once. To solve that we just use length(table(PR)).
 ```{r Conversion rate}
@@ -216,7 +216,7 @@ In order to compute the conversion rate, we need to compare the paying users wit
   PR.AND.DS.USERS <- sum(num.users.DS, num.users.PR)
   
   conversion.rate <- (num.users.PR / PR.AND.DS.USERS) * 100
-  paste(as.character(round(conversion.rate, 2)), "%")
+  conversion.rate <- paste(as.character(round(conversion.rate, 2)), "%")
 
 ```
 ```{r ARPU}
@@ -243,7 +243,7 @@ In this section, we aim at answering Researh Question 8: “Does moving gate to 
 The designers of the game are interested in knowing whether moving the gate to level 40 has improved the engagement of the users. Thus, we will perform an A/B test to answer the research question, considering engagement as the number of round games of every user. Thus, we would like to know whether moving the gate to level 40 increases engagement with 95% confidence level.
 
 ### 5.1 Hypotheses
-In order to realize the A/B testing, it is necesarry to propose an alternative and null hypotheses.
+In order to realize the A/B testing, it is necessary to propose an alternative and null hypothesis.
 
 Null hypothesis:
 
@@ -340,7 +340,8 @@ To reject H0 p needs to be lower than alpha, in this case H0 can't be rejected
 
 ### 5.4 Conclusion of A/B testing
 Since Tobs isn't in the aceptance area we can't reject H0
-faltaria añadir minima justificacion!!!!!!!!!!!
+
+faltaria añadir minima justificacion!!!!!!!!!!! Based on the numbers computed before, conclude whether you can reject the null hypothesis or not. And then, answer the research question. Justify your answer.
 
 ## 6. Regression analysis
 In this section, we aim at answering Researh Question 9: “Can the amount of in-app purchases be related to the number of game rounds of the players?” Thus, we would like to investigate whether the amount of in-app purchases depends somehow on the number of game rounds. In order to answer this question, we will use the regression analysis.
@@ -420,7 +421,7 @@ We also created a plot to have a visual representation of the evolution of the a
 
 
 ## 8. Conclusion
-In conclusion, 
+In conclusion, !!!!!!!!!FALTAA!!!!!!!!!
 
 Write a summary of your analysis, as if you were answering the questions to the designers. Be concise, clear, and use the right terminology.
 
