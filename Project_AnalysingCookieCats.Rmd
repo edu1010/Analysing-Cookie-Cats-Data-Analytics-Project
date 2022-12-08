@@ -100,8 +100,8 @@ First of all, we used the library dplyr in order to merge the two datasets. We d
   
   merge.purch = merge(DS,PR,by.x="userid",by.y="id")
   
-  write.csv(merge.all,"D:/uni/QUART/merged_dataset.csv", row.names = FALSE)
-  write.csv(merge.purch,"D:/uni/QUART/merged_justpurch_dataset.csv", row.names = FALSE)
+  #write.csv(merge.all,"D:/uni/QUART/merged_dataset.csv", row.names = FALSE)
+  #write.csv(merge.purch,"D:/uni/QUART/merged_justpurch_dataset.csv", row.names = FALSE)
 ```
 
 ## 3. Descriptive Analytics
@@ -297,7 +297,10 @@ In the following pie chart, we can observe the different percentages of maximum 
  GroupAtotalUsersRetention<-length(DS$userid[DS$retention_1=="TRUE" & DS$retention_7 =="TRUE" & DS$version == "gate_30"]) 
  GroupBtotalUsersRetention<-length(DS$userid[DS$retention_1=="TRUE" & DS$retention_7 =="TRUE" & DS$version == "gate_40"])
  totalUsersWithMaxRetention<- c(GroupAtotalUsersRetention,GroupBtotalUsersRetention)
- pie(totalUsersWithMaxRetention,labels=c("Group A (gate_30)","Group B (gate_40)"), main = "Maximum retention comparison between the two groups")
+ pie(totalUsersWithMaxRetention,labels=c(paste(
+   "Group A (gate_30)",round(GroupAtotalUsersRetention/(GroupAtotalUsersRetention+GroupBtotalUsersRetention),digits = 3)*100,"%"),
+                     paste( "Group B (gate_40)",round(GroupBtotalUsersRetention/(GroupAtotalUsersRetention+GroupBtotalUsersRetention),digits = 3)*100,"%")), 
+     main = "Maximum retention comparison between the two groups")
 
 ```
 
@@ -305,10 +308,10 @@ In the following pie chart, we show is what is the percentage of the total of ga
 ```{r Visualisation part 3}
  GroupASumGameRounds<-sum(DS$sum_gamerounds[ DS$version == "gate_30"]) 
  GroupBSumGameRounds<-sum(DS$sum_gamerounds[ DS$version == "gate_40"]) 
-
+totalGameRounds <- GroupASumGameRounds+GroupBSumGameRounds
  gameRoundsVector<- c(GroupASumGameRounds,GroupBSumGameRounds)
- aTmp<-paste("Group A (gate_30)",GroupASumGameRounds)
- bTmp<-paste("Group B (gate_40)",GroupBSumGameRounds)
+ aTmp<-paste("Group A (gate_30)",round(GroupASumGameRounds/totalGameRounds,digits = 4)*100,"%")
+ bTmp<-paste("Group B (gate_40)",round(GroupBSumGameRounds/totalGameRounds,digits = 4)*100,"%")
  pie(gameRoundsVector,labels=c( aTmp, bTmp), main = "Percentage of total game rounds played by each group")
 
 ```
