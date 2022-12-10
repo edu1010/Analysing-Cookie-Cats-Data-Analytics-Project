@@ -39,6 +39,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 4. Monetization metrics
 
+    - 4.1. Conversion Rate
+    - 4.2. ARPU
+    - 4.3. ARPPU
+
 5. A/B testing
 
     - 5.1. Hypotheses
