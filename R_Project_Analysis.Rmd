@@ -71,7 +71,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 1. Getting to know the datasets
 
-Before we starting with the analysis, we will have a look at the structure of both datasets. First of all, we have uploaded the data sets in R. 
+Before we start with the analysis, we will have a look at the structure of both datasets. First of all, we have uploaded the data sets in R. 
 
 This are the names for the provided data frames:
 
