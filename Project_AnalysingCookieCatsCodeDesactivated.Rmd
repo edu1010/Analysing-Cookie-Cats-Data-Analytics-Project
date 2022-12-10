@@ -1,0 +1,581 @@
+---
+title: "Analysing Cookie Cats"
+author: "Eduard Corral, Marcel Feliu and Paula Ros."
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 0. Table of Contents
+
+1. Getting to know the datasets
+
+2. Preprocessing
+
+    - 2.1. Preprocessing dataset “Cookie Cats AB Testing”
+
+    - 2.2. Preprocessing dataset “Cookie Cats Purchases”
+
+    - 2.3 Merge the datasets
+
+3. Descriptive Analytics
+
+    - 3.1. Dataset “Cookie Cats AB Testing”
+
+        - 3.1.1. Users that downloaded the game
+
+        - 3.1.2. Distribution of users in groups
+
+        - 3.1.3. Game rounds
+
+        - 3.1.4. Retention (day 1 and day 7)
+
+        - 3.1.5. Are there non-playing users?
+
+    - 3.2. Dataset “Cookie Cats Purchases”
+
+4. Monetization metrics
+
+5. A/B testing
+
+    - 5.1. Hypotheses
+
+    - 5.2. Visualisation
+
+    - 5.3. Computation
+
+    - 5.4. Conclusion of A/B testing
+
+6. Regression analysis
+
+    - 6.1. Visual representation
+
+    - 6.2. Building the model
+
+    - 6.3. Model fit
+
+    - 6.4. Predict a case
+
+    - 6.5. Simulation
+
+7. Dashboard
+
+8. Conclusion
+
+9. Team contribution
+
+10. Non-cheating manifesto
+
+## 1. Getting to know the datasets
+
+Before we start with the analysis, have a look at the structure of both datasets. First, upload the data sets in
+R. For a smoother correction on my side, please provide the data frames with the following names:
+• For dataset ‘cookie_cats_ABtest.csv‘ use data frame variable named ‘DS‘.
+• For dataset ‘cookie_cats_purch.csv", use data frame variable named ‘PR‘.
+For each dataset, show and describe the information that they contain: rows and columns of the dataset, and
+types of variables.
+
+```{r Getting to know the datasets}
+  DS <- read.csv("cookie_cats_ABtest.csv", sep = ",")
+  PR <- read.csv("cookie_cats_purch.csv", sep = ",")
+  
+  str(DS)
+  str(PR)
+```
+
+## 2. Preprocessing
+
+Before we start with the analysis, revise the structure and contents of the data sets to look for inconsistencies,
+missing values, or errors, and if necessary, perform the necessary transformations. You should also check that
+all IDs of the second data set (cookie_cats_purch) are valid IDs (i.e., existing IDs in cookie_cats_ABtest).
+If you apply any transformation, you should include a proper explanation in your report.
+
+### 2.1. Preprocessing dataset “Cookie Cats AB Testing”
+
+First of all, we used the function is.na() to locate the rows that had NA and then, we deleted them.
+
+```{r Preprocessing part 1 Cookie Cats AB Testing}
+  naUserid <- which(is.na(DS$userid)) ; naUserid
+  DS <- DS[-naUserid, ]
+```
+After that, we used the function table() to look at the different variables to discover any more inconsistencies. We discovered that the variable called "retention_1" had two versions of TRUE and two versions of FALSE,
+ones with lowercase letters and spaces and the others correct, with capital letters. The following code shows the process on preprocessing the content of this variable.
+
+```{r Preprocessing part 2 Cookie Cats AB Testing}
+  table(DS$retention_1)
+  DS$retention_1[DS$retention_1 == "false "] = FALSE
+  DS$retention_1[DS$retention_1 == "  true "] = TRUE
+  table(DS$retention_1)
+```
+Finally, we deleted one value from the sum_gamerounds that was too big and had no consistence compared to the rest of the values.
+```{r Preprocessing part 3 Cookie Cats AB Testing}
+  DS <- DS[-which.max(DS$sum_gamerounds), ]
+```
+### 2.2. Preprocessing dataset “Cookie Cats Purchases”
+
+For the "Cookie Cats Purchases" dataset we discovered that the NA from the previous dataset were included too in this one. We obtained the positions of this variables and deleted their rows.
+
+```{r Preprocessing Cookie Cats Purchases}
+  inexistentValues <- which((PR$id %in% DS$userid) == FALSE) ; inexistentValues
+  PR <- PR[-inexistentValues, ]
+  which((PR$id %in% DS$userid) == FALSE)
+```
+In addition, we deleted the NAs that were in the column purch.
+```{r Preprocessing NAs from variable purch}
+  naPurch <- which(is.na(PR$purch)) ; naPurch
+  PR <- PR[-naPurch, ]
+```
+
+Moreover, we changed the column purch that was formed by characters to a numerical one, deleting the EUR.
+```{r Preprocessing variable purch}
+  PR['purch'] <-  as.numeric(gsub("[a-zA-Z]","", PR$purch))
+```
+
+We changed the negative values into positive because it didn't make sense to buy in negative.
+```{r Changing negative values into positive}
+  PR$purch[PR$purch < 0] <- -(PR$purch[PR$purch < 0])
+  unique(PR$purch)
+```
+Finally, we detected that there were some ids that were repeated. We have interpreted that those users did more than one purch. We decided to sum both purch values and merge them in one row. 
+
+We duplicated the dataset in order to have the original without the merge for the descriptive analytics.
+```{r Merging the users that did more than one purch}
+  library(dplyr)
+
+  PR.different.purch <- PR
+  PR <- PR %>% group_by(id) %>%
+  summarise(purch=sum(purch)) %>%
+  as.data.frame()
+```
+
+### 2.3 Merge the datasets
+First of all, we used the library dplyr in order to merge the two datasets. We decided to create two new datasets, one with all the population (merge.all) and another with just the users that did a purchase in the game (merge.purch), with the two datasets we will compare both models to know which has the best linear model. In the dataset with all the population we changed the NAs values from purch to 0 EUR.
+```{r Merge datasets}
+  library(dplyr)
+  merge.all <-merge(DS,PR,by.x="userid",by.y="id", all = TRUE)
+  merge.all$purch[is.na(merge.all$purch)] <- 0
+  
+  merge.purch = merge(DS,PR,by.x="userid",by.y="id")
+```
+
+## 3. Descriptive Analytics
+
+Perform descriptive analytics of the datasets visually and numerically. To make this task simpler, we’ll do
+the analysis for each data set separately.
+
+### 3.1. Dataset “Cookie Cats AB Testing”
+#### 3.1.1 Users that downloaded the game
+There are 90.185 users that downloaded the Cookie Cats game.
+```{r Users that downloaded the games}
+  nrow(DS)
+```
+#### 3.1.2 Distribution of users in groups
+From the 90.185 users, 44698 played the gate number 30 and 45.487 played the gate number 40.
+```{r Distribution of users in groups}
+  table(DS$version)
+```
+
+#### 3.1.3 Game rounds
+The next step was calculating the distribution of game rounds in the players’ population in a boxplot to show it in a visual way. We also calculated the distribution of game rounds among the users of version A (gate_30) and version B (gate_40) of the game separately and compared them.
+```{r Game rounds}
+  boxplot(DS$sum_gamerounds, main = "Distribution of game rounds")
+  groupA <- DS$sum_gamerounds[DS$version == "gate_30"]
+  groupB <- DS$sum_gamerounds[DS$version == "gate_40"]
+  boxplot(groupA, groupB, names = c("Group A (gate 30)", "Group B (gate 40)"), main = "Distribution of game rounds. Comparison between each version")
+```
+
+#### 3.1.4 Retention (day 1 and day 7)
+What is the value of retention at day 1? (percentage of users that are still active the day after
+installation).
+```{r retention day 1}
+  activeUsersDay1 <- sum(DS$retention_1 == TRUE)
+  totalUsers <- nrow(DS)
+  percentageRetentionDay1 <- activeUsersDay1 * 100 / totalUsers
+  paste(as.character(round(percentageRetentionDay1, 3)),"%")
+```
+What is the value of retention at day 7? (percentage of users that are still active after one week of
+installation).
+```{r retention day 7}
+  activeUsersDay7 <- sum(DS$retention_1 == TRUE & DS$retention_7 == TRUE)
+  percentageRetentionDay7 <- activeUsersDay7 * 100 / totalUsers
+  paste(as.character(round(percentageRetentionDay7, 3)),"%")
+```
+
+#### 3.1.5 Are there non-playing users?
+To see if there are non-playing users, we look for those who had both retention at day 1 and at day 7 as FALSE.
+```{r Sum non-playing users}
+  non.playing.users <- sum(DS$retention_1 == FALSE & DS$retention_7 == FALSE) ; non.playing.users
+```
+Finally, to compute the percentage, we just have to multiply the non-playing users for 100 and then divide it for the total users.
+```{r Percentage non-playing users}
+  percentageNonPlayingUsers <- non.playing.users * 100 / totalUsers
+  paste(as.character(round(percentageNonPlayingUsers, 2)),"%")
+```
+
+### 3.2 Dataset “Cookie Cats Purchases”
+#### 3.2.1 Percentage purchase quantities
+To do the descriptive analysis we start by computing how many and the percentage of each purchase quantity. To do so, we get how many purchases of the same amount are made. After that, we can easily compute the percentage of each purchase amount. Once we finished we used a barplot to show the data.
+
+```{r Percentage Purchase Quantities}
+  num.users.DS <- nrow(DS)
+  num.users.PR <- nrow(PR)
+  c(num.users.DS, num.users.PR)
+  
+  purch.2.29 <- sum(length(PR.different.purch$purch[PR.different.purch$purch == "2.29"])) * 100 / nrow(PR.different.purch) 
+  purch.10.99 <- sum(length(PR.different.purch$purch[PR.different.purch$purch == "10.99"])) * 100 / nrow(PR.different.purch) 
+  purch.21.99 <- sum(length(PR.different.purch$purch[PR.different.purch$purch == "21.99"])) * 100 / nrow(PR.different.purch) 
+  purch.54.99 <- sum(length(PR.different.purch$purch[PR.different.purch$purch == "54.99"])) * 100 / nrow(PR.different.purch) 
+  purch.109.99 <- sum(length(PR.different.purch$purch[PR.different.purch$purch == "109.99"])) * 100 / nrow(PR.different.purch) 
+  
+  purch.quantities <- c(purch.2.29, purch.10.99, purch.21.99, purch.54.99, purch.109.99)
+  
+  myLables <- c("2,29$ ", "10,99$ ", "21,99$ ", "54,99$ ", "109,99$ ")
+  myLables2 <- paste(round(purch.quantities),"%", sep = "")
+  myLables2
+  myLables3 <- paste(myLables, myLables2)
+  
+  barplot(purch.quantities, names = myLables, col = cm.colors(length(purch.quantities)), legend.text = myLables3, ylim = c(0, 50), main = "Percentage Purchase Quantities", ylab = "Amount of purchases", xlab = "Purchase Price", las = 1)
+    
+```
+
+#### 3.2.2 Multiple purchases percentage
+The next thing we want to see is how many people has made purchases more than one time. To do that we first compute how many people id appear more than one time in the table. Once with that number, we can just calculate the percentage by multiplying it for 100 and then dividing it for the total number of users that have made any purchase. Finally, we can use a pie chart to make it more visual.
+
+```{r Percentage of people who has purchases more than 1 time}
+  repeated <- length(table(PR.different.purch$id))
+  single <- nrow(PR.different.purch) - repeated
+  c(repeated, single)
+
+
+  percentage.multiple.purchases <- repeated * 100 / nrow(PR.different.purch)
+  pct.paying.users <- (nrow(PR.different.purch)-repeated) * 100 / nrow(PR.different.purch)
+
+  total.pct <- round(c(pct.paying.users, percentage.multiple.purchases),)
+  
+  lable1 <- c("Unique purchase", "Multiple Purchase")
+  lable2 <- paste(total.pct, "%", sep = "") ; lable2
+  lable3 <- paste(lable1, lable2) ; lable3
+  
+  pie(c(pct.paying.users, percentage.multiple.purchases), lable3, main = "Multiple Purchase Percentage")
+```
+
+#### 3.2.3 Quantity of money spent
+Then we decided to show the mean, max and min of the money spent. After computing all the numbers we put it in a table we created with the kable function.
+```{r Mean and maximum of money spet}
+  mean <- round(mean(PR$purch),1)
+  max <- round(max(PR$purch),1)
+  min <- round(min(PR$purch),1)
+  
+  money.data <- data.frame(mean, max, min)
+  knitr::kable(money.data, format = "pipe", col.names = c("Mean", "Max", "Min"), align = c("l", "c", "c"))
+```
+Finally, we made a list with the top 3 of the three most expensive purchases. We used a boxplot to compare the purchases between the two versions of the game.
+```{r Top 3 more money spent and Boxplot}
+  top3.max.purchase <- round(sort(PR$purch, decreasing = TRUE),)[1:3] ; top3.max.purchase
+  boxplot(merge.purch$purch ~ merge.purch$version, main = "Purchases related with Version", xlab="Version", ylab="Money spent", col="orange", border="brown", las = 1)
+```
+
+## 4. Monetization metrics
+#### 4.1 Conversion Rate
+In order to compute the conversion rate, we need to compare the paying users with the total population of the game. We do it by dividing the length of PR table with the sum of the sum of both tables; PR and DS.
+```{r Conversion rate}
+  num.users.DS <- nrow(DS)
+  num.users.PR <- nrow(PR)
+  
+  PR.AND.DS.USERS <- sum(num.users.DS, num.users.PR)
+  
+  conversion.rate <- (num.users.PR / PR.AND.DS.USERS) * 100
+  conversion.rate <- paste(as.character(round(conversion.rate, 2)), "%") ; conversion.rate
+
+```
+
+#### 4.2 ARPU
+By dividing the total revenue by the total population of the game, we can see the amount of money spent by user.
+```{r ARPU}
+  total.revenue <- sum(PR$purch)
+  ARPU <- total.revenue / PR.AND.DS.USERS
+  ARPU <- round(ARPU, digit = 2) ; ARPU
+
+```
+#### 4.3 ARPPU
+To see the amount of money spent by paying user, we just have to divide the total revenue, like before, but by the amount of paying users.
+```{r ARPPU}
+  ARPPU <- total.revenue / num.users.PR
+  ARPPU <- round(ARPPU, digit = 2) ; ARPPU
+  ARPPU.pct <- ARPPU * 100 / num.users.PR ; ARPPU.pct
+
+```
+We did a simple table with the Kable function to show the data.
+```{r TABLE}
+  MM <- data.frame(conversion.rate, ARPU, ARPPU)
+  knitr::kable(MM, format = "pipe", col.names = c("Conversion Rate", "ARPU", "ARPPU"), align = c("l", "c", "c"))
+
+```
+
+
+## 5. A/B testing
+In this section, we aim at answering Researh Question 8: “Does moving gate to level 40 improve engagement of the users significantly?
+
+The designers of the game are interested in knowing whether moving the gate to level 40 has improved the engagement of the users. Thus, we will perform an A/B test to answer the research question, considering engagement as the number of round games of every user. Thus, we would like to know whether moving the gate to level 40 increases engagement with 95% confidence level.
+
+### 5.1 Hypotheses
+In order to realize the A/B testing, it is necessary to propose an alternative and null hypothesis.
+
+Null hypothesis:
+
+- Gate 40 doesn't improve the engagement of the users.
+
+- H₀: engagement (number of game rounds) gate 40 <= engagement (number of game rounds) gate 30
+
+Alternative hypothesis: 
+
+- Gate 40 improves the engagement of the users.
+
+- H₁: engagement (number of game rounds) gate 40 > engagement (number of game rounds) gate 30
+
+Other aspects to be taken in account:
+
+- Testing of two samples (because there is gate 40 and gate 30)
+
+- One tail.
+
+### 5.2 Visualisation
+Before realizing any computation, first of all, we will create different graphics in order to have a clear visualisation of the variables and investigate whether there seem to be differences on game rounds between the different groups.
+
+In the following boxplot, we can see the different distribution between Group A (gate_30) and Group B (gate_40):
+```{r Visualisation}
+ boxplot(groupA, groupB, names = c("Group A", "Group B"), main = "Differences between the distribution of the two groups")
+```
+
+In the following pie chart, we can observe the different percentages of maximum retention between each group. For us, the maximum retention is when the retention of the day one and seven are true, which means that the user has been active the maximum of days possible.
+```{r Visualisation part 2}
+ GroupAtotalUsersRetention<-length(DS$userid[DS$retention_1=="TRUE" & DS$retention_7 =="TRUE" & DS$version == "gate_30"]) 
+ GroupBtotalUsersRetention<-length(DS$userid[DS$retention_1=="TRUE" & DS$retention_7 =="TRUE" & DS$version == "gate_40"])
+ totalUsersWithMaxRetention<- c(GroupAtotalUsersRetention,GroupBtotalUsersRetention)
+ pie(totalUsersWithMaxRetention,labels=c(paste(
+   "Group A (gate_30)",round(GroupAtotalUsersRetention/(GroupAtotalUsersRetention+GroupBtotalUsersRetention),digits = 3)*100,"%"),
+                     paste( "Group B (gate_40)",round(GroupBtotalUsersRetention/(GroupAtotalUsersRetention+GroupBtotalUsersRetention),digits = 3)*100,"%")), 
+     main = "Maximum retention comparison between the two groups")
+
+```
+
+In the following pie chart, we show is what is the percentage of the total of game rounds played by each group:
+```{r Visualisation part 3}
+ GroupASumGameRounds<-sum(DS$sum_gamerounds[ DS$version == "gate_30"]) ; GroupASumGameRounds
+ GroupBSumGameRounds<-sum(DS$sum_gamerounds[ DS$version == "gate_40"]) ; GroupBSumGameRounds
+totalGameRounds <- GroupASumGameRounds+GroupBSumGameRounds
+ gameRoundsVector<- c(GroupASumGameRounds,GroupBSumGameRounds)
+ aTmp<-paste("Group A (gate_30)",round(GroupASumGameRounds/totalGameRounds,digits = 4)*100,"%")
+ bTmp<-paste("Group B (gate_40)",round(GroupBSumGameRounds/totalGameRounds,digits = 4)*100,"%")
+ pie(gameRoundsVector,labels=c( aTmp, bTmp), main = "Percentage of total game rounds played by each group")
+
+```
+
+### 5.3 Computation
+In order to realize the computation, we will apply the A/B testing hypothesis method, computing and showing all the necessary values: the observed statistic, the p value, etc.
+
+First of all, we will compare both groups to decide if we need to use an unequal variance or an equal variance:
+```{r Comparasion}
+length(DS$userid[DS$version=="gate_30"])
+length(DS$userid[DS$version=="gate_40"])
+```
+
+Finally, we decide to use the unequal variance, because the different groups don't have the same amount of users. In the following code, we calculate the mean and the standard deviation for both groups and also the observed value (Tobs) and finally, the degrees of freedom.
+```{r computantion}
+meanGroupA<- mean(DS$sum_gamerounds[DS$version=="gate_30"] )
+meanGroupA
+meanGroupB<- mean(DS$sum_gamerounds[DS$version=="gate_40"] )
+meanGroupB
+
+s1<-sd(DS$sum_gamerounds[DS$version=="gate_30"])
+s2<-sd(DS$sum_gamerounds[DS$version=="gate_40"])
+
+Tobs<-(meanGroupA-meanGroupB)/sqrt(s1^2/meanGroupA + s2^2/meanGroupB)
+Tobs
+
+degreesOfFredom<-(s1^2/meanGroupA + s2^2/meanGroupB)^2 /
+  ( ((s1^2/meanGroupA)^2/meanGroupA-1) + ((s2^2/meanGroupB)^2/(meanGroupB-1) ))
+degreesOfFredom
+```
+After calculating the previous values, we realize a comparasion between the observed value and the normal distribution, using the upper tail.
+```{r Comparasion part 2}
+Talpha = qt ( 0.05, df=degreesOfFredom,lower.tail=FALSE )
+Talpha
+```
+The necessary condition to reject H0 is sumGameRounds gate 40 > sumGameRounds gate 30
+```{r tObs  and aplha}
+h0CanBeRejected<-Tobs>Talpha
+h0CanBeRejected
+```
+For verification of the analysis we do a double check, now using the pvalue and alpha to see if the results are the same
+```{r tObs  and aplha part 2}
+p<-pt(Tobs,df=degreesOfFredom,lower.tail=FALSE)
+p
+alpha <- 0.005
+canRejectH0WithPvalue <- p<alpha
+canRejectH0WithPvalue
+```
+To reject H0 p needs to be lower than alpha, in this case H0 can't be rejected
+
+### 5.4 Conclusion of A/B testing
+Since Tobs isn't in the acceptance area, we can't reject H0. This indicates that we don't have enough evidence to say that moving the gate to the level 40 the engagement will improve.
+
+## 6. Regression analysis
+In this section, we aim at answering Research Question 9: “Can the amount of in-app purchases be related to the number of game rounds of the players?” Thus, we would like to investigate whether the amount of in-app purchases depends somehow on the number of game rounds. In order to answer this question, we will use the regression analysis.
+
+In this analysis we will use the merged datasets called merge.all and merge.purch, created in the 2.3 section.
+
+### 6.1 Visual representation
+Before building the model, we have represented visually the potential relationship between the total amount spent by the user and the number of game rounds using a plot. 
+```{r Visual representation}
+  plot(merge.all$purch, merge.all$sum_gamerounds, ylab = "Number of Game Rounds", xlab = "Amount spent by user in EUR", main = "Relationship between the game rounds and the purchases")
+```
+
+After looking at the results of the graph, we can observe that most of the users spend 0 EUR and play from 0 to 3000 game rounds. In the other side, the rest of the users play less than 250 game rounds and spend approximately between 0 and 200 EUR. The users that spend the most are not in the majority group, as the graph shows, their values are spread over the plot, disregarding some exceptions, these users play around 250 and 600 game rounds, and spend between 200 and 620 EUR. We can intuit that there is no a direct relationship between playing more game rounds and spending more money, because the users who play more rounds do not even spend 1 EUR.
+
+### 6.2 Building the model
+We have developed two models with linear regression analysis. One taking into account all users (lm.all) and the other taking into account only those who have made in-game purchases(lm.just.purch). We can observe that the coefficients of the two linear models have completely different values, the linear model made of just the users that realize purchases has a higher coefficient (3.69>0.11) than the other.
+```{r Building the model}
+  lm.all <- lm(purch ~ sum_gamerounds, merge.all)
+  lm.all
+  
+  lm.just.purch <- lm(purch ~ sum_gamerounds, merge.purch)
+  lm.just.purch
+```
+In the following plots we can visualise the two linear models. 
+```{r visualise the model}
+  plot(merge.all$sum_gamerounds, merge.all$purch, main = "Linear Model 1 (lm.all)", ylab = "Purch", xlab = "Game Rounds")
+  abline(lm.all)
+  
+  plot(merge.purch$sum_gamerounds, merge.purch$purch, main = "Linear Model 2 (lm.just.purch)", ylab = "Purch", xlab = "Game Rounds")
+  abline(lm.just.purch)
+```
+
+Through the two graphs, we can observe that the models relate to the total amount of purchases with the game rounds in a different way. 
+
+In the first plot made with all the users, the line in the graph has a very low slope compared to the second plot made of just the users that realize purchases, which has a high slope. 
+
+This means that if the only take into account the users that realize purchases, there is a linear relation between playing more game rounds and spending more money but, if we take into account all the users and not just the ones that realize in-app purchases, we can observe that there is not a linear relation between this variables, just the opposite, the players that play more game rounds don't spend a single EUR.
+
+### 6.3 Model fit
+In order to evaluate the quality of the models, we used the function summary(): 
+```{r Model fit}
+  summary(lm.all)
+  summary(lm.just.purch)
+```
+After looking at the results of the function summary(), the goodness of fit is given by the value of the R-squared, that is a measure of how close the data is to the fitted regression line.
+
+We can observe that the linear model formed by all the users (lm.all) has a R-squared of 0.009682 and the second linear model only formed by the users that realized purchases in the game (lm.just.purch) has a R-squared of 0.6727. The best R-square value is the second one, because it is the one nearest to 1, the maximum R-squared value.
+
+Finally, we can conclude that the best linear model is the one called lm.just.purch, only formed by the users that realized purchases in the game. For this reason, we will use this linear model for the sections 6.4 and 6.5.
+
+### 6.4 Predict a case
+We have predicted a case of how much a user would spend if he or she had been playing 50 game rounds. In the following code we realized the prediction, obtaining the result that the user would spend 38.61 EUR, based on the linear model made of the users that realized any purchase (lm.just.purch).
+```{r Predicting a case of 50 game rounds}
+  invest <- 50
+  new.ds <- data.frame(sum_gamerounds=invest)
+  prediction = predict(lm.just.purch, new.ds)
+  prediction <- round(prediction, digits = 2)
+  prediction
+```
+
+### 6.5 Simulation
+We have realized a simulation of how much a player would spend for different game rounds, ranging from 0 until 1000,
+every 50 rounds. To observe the results, we have created a table of the amount of game rounds and the total amount of money that the user would spend.
+```{r Simulation player spending for different game rounds}
+  simulation.gamerounds <- seq(from = 0, to = 1000, by = 50)
+  new.ds <- data.frame(sum_gamerounds=simulation.gamerounds)
+  simulation.purch <- predict(lm.just.purch, new.ds)
+  simulation.purch <- round(simulation.purch, digits = 2)
+  
+  ds.simulation <- data.frame(simulation.gamerounds, simulation.purch)
+  names(ds.simulation)[1] <- "Game Rounds"
+  names(ds.simulation)[2] <- "Purch"
+    
+  knitr::kable(ds.simulation, "simple", align = "lccrr", caption = "Purch simulation from 0 until 1000 game rounds")
+```
+
+We also created a plot to have a visual representation of the evolution of the amount of purchases that the user does in relation to the number of game rounds that plays. We can observe that there is a clear relationship between the two variables, where the values increase in a linear way.
+```{r Plot for the simulation}
+  plot(ds.simulation, ylab = "Purch (EUR)", xlab = "Number of Game Rounds", main = "Purch simulation from 0 until 1000 game rounds")
+```
+
+## 7. Dashboard
+The dashboard has been realized in Tableau and it has been attached in a pdf file.
+
+
+
+## 8. Conclusion
+
+In conclusion, there were 90.185 users that downloaded the game. Those users were distributed in two groups of similar size, Group A (gate 30); with 44.698 players (50,6%) and Group B (gate 40); with 45.487 players (49,4%).
+The number of game rounds played was 2.294.854 (49,58%) for group A and 2.333.460 (50,42%) for group B.
+
+The percentage of the retention at day one was 44,52% while the retention at the day 7 decayed up to 14,62%, and 46,436 users never played the game, which is more than the half of the players (51,49%).
+
+Write a summary of your analysis, as if you were answering the questions to the designers. Be concise, clear, and use the right terminology.
+
+
+The conversion rate is average and the ARPU is really low. The most prominent metric of monetization is the ARPPU; which is about 6,5%. The average ARPPU for mobile games is around 5%, so in this game is 1,5% higher than average. That means that in this game there is a small amount of people that purchase in the game but those people spend more than the average.
+
+We couldn't have enough evidence to conclude that moving the gate from the level 30 to the level 40 make any improve. The same happens with the relation between game rounds and purchases. By the result we can't intuit that there is a direct relationship between these two variables.
+
+
+
+
+## 9. Team contribution
+In order to realize this final project, first of all, one member of the group created the Rmd file, created the structure of the project and realized the first section called "1. Getting to know the datasets".
+
+Then, in class, we decided to realize the second section of the project, the preprocessing, collectively, in order to take advantage of the free time of the data analysis class.
+
+After finishing this part, we divided the following four sections (descriptive analytics, monetization metrics, A/B testing and regression analysis) among the three members of the team, in order to make the best use of our time and, at the same time, helping each other with any problem or doubt.
+
+After developing those sections, we realized the dashboard and conclusion jointly too again, in order to end the project together and understand every part of the work by sharing the different results.
+
+In summary, the different parts that realized each member are the following ones:
+
+Marcel Feliu:
+
+- Preprocessing.
+
+- Descriptive Analytics (part 3.1 and 3.2)
+
+- Monetization metrics.
+
+- Dashboard.
+
+- Conclusions.
+
+Paula Ros:
+
+- Getting to know the datasets.
+
+- Preprocessing.
+
+- Descriptive Analytics (part 3.1)
+
+- Regression Analysis.
+
+- Dashboard.
+
+- Conclusions.
+
+Eduard Corral:
+
+- Preprocessing.
+
+- Descriptive Analytics (part 3.1)
+
+- A/B testing.
+
+- Dashboard.
+
+- Conclusions.
+
+## 10. Non-cheating manifesto
+Finally, on behalf of the authors of this project, Marcel Feliu, Paula Ros and Eduard Corral, we commit ourselves that we have not made any kind of cheat, creating every part of this final project with our own knowledge and abilities.
+
+
+
