@@ -71,12 +71,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 1. Getting to know the datasets
 
-Before we start with the analysis, have a look at the structure of both datasets. First, upload the data sets in
-R. For a smoother correction on my side, please provide the data frames with the following names:
-• For dataset ‘cookie_cats_ABtest.csv‘ use data frame variable named ‘DS‘.
-• For dataset ‘cookie_cats_purch.csv", use data frame variable named ‘PR‘.
-For each dataset, show and describe the information that they contain: rows and columns of the dataset, and
-types of variables.
+Before we starting with the analysis, we will have a look at the structure of both datasets. First of all, we have uploaded the data sets in R. 
+
+This are the names for the provided data frames:
+
+- For dataset ‘cookie_cats_ABtest.csv‘ use data frame variable named ‘DS‘.
+
+- For dataset ‘cookie_cats_purch.csv", use data frame variable named ‘PR‘.
+
+Now we will show the information that each dataset contains: rows, columns and types of variables.
 
 ```{r Getting to know the datasets}
   DS <- read.csv("cookie_cats_ABtest.csv", sep = ",")
@@ -86,12 +89,11 @@ types of variables.
   str(PR)
 ```
 
+With srt() function, on the one hand, we can observe that the dataframe DS is formed by 5 variables: userid (int), version (chr), sum_gamerounds (int), retention_1 (chr) and retention_7 (logi). On the other hand, the dataframe PR is just formed by two variables: id (int) and purch (chr).
+
 ## 2. Preprocessing
 
-Before we start with the analysis, revise the structure and contents of the data sets to look for inconsistencies,
-missing values, or errors, and if necessary, perform the necessary transformations. You should also check that
-all IDs of the second data set (cookie_cats_purch) are valid IDs (i.e., existing IDs in cookie_cats_ABtest).
-If you apply any transformation, you should include a proper explanation in your report.
+Before we start with the analysis, we will revise the structure and contents of the data sets to look for inconsistencies, missing values, or errors, and if necessary, perform the necessary transformations.
 
 ### 2.1. Preprocessing dataset “Cookie Cats AB Testing”
 
@@ -101,8 +103,8 @@ First of all, we used the function is.na() to locate the rows that had NA and th
   naUserid <- which(is.na(DS$userid)) ; naUserid
   DS <- DS[-naUserid, ]
 ```
-After that, we used the function table() to look at the different variables to discover any more inconsistencies. We discovered that the variable called "retention_1" had two versions of TRUE and two versions of FALSE,
-ones with lowercase letters and spaces and the others correct, with capital letters. The following code shows the process on preprocessing the content of this variable.
+
+After that, we used the function table() to look at the different variables to discover any more inconsistencies. We discovered that the variable called "retention_1" had two versions of TRUE and two versions of FALSE, ones with lowercase letters and spaces and the others correct, with capital letters. The following code shows the process of preprocessing the content of this variable.
 
 ```{r Preprocessing part 2 Cookie Cats AB Testing}
   table(DS$retention_1)
@@ -110,26 +112,29 @@ ones with lowercase letters and spaces and the others correct, with capital lett
   DS$retention_1[DS$retention_1 == "  true "] = TRUE
   table(DS$retention_1)
 ```
+
 Finally, we deleted one value from the sum_gamerounds that was too big and had no consistence compared to the rest of the values.
 ```{r Preprocessing part 3 Cookie Cats AB Testing}
   DS <- DS[-which.max(DS$sum_gamerounds), ]
 ```
+
 ### 2.2. Preprocessing dataset “Cookie Cats Purchases”
 
-For the "Cookie Cats Purchases" dataset we discovered that the NA from the previous dataset were included too in this one. We obtained the positions of this variables and deleted their rows.
+For the "Cookie Cats Purchases" dataset we discovered that the NAs from the previous dataset were included too in this one. We obtained the positions of this variables and deleted their rows.
 
 ```{r Preprocessing Cookie Cats Purchases}
   inexistentValues <- which((PR$id %in% DS$userid) == FALSE) ; inexistentValues
   PR <- PR[-inexistentValues, ]
   which((PR$id %in% DS$userid) == FALSE)
 ```
+
 In addition, we deleted the NAs that were in the column purch.
 ```{r Preprocessing NAs from variable purch}
   naPurch <- which(is.na(PR$purch)) ; naPurch
   PR <- PR[-naPurch, ]
 ```
 
-Moreover, we changed the column purch that was formed by characters to a numerical one, deleting the EUR.
+Moreover, we changed the column purch that was formed by characters to a numerical one, deleting the EUR letters.
 ```{r Preprocessing variable purch}
   PR['purch'] <-  as.numeric(gsub("[a-zA-Z]","", PR$purch))
 ```
@@ -139,9 +144,8 @@ We changed the negative values into positive because it didn't make sense to buy
   PR$purch[PR$purch < 0] <- -(PR$purch[PR$purch < 0])
   unique(PR$purch)
 ```
-Finally, we detected that there were some ids that were repeated. We have interpreted that those users did more than one purch. We decided to sum both purch values and merge them in one row. 
 
-We duplicated the dataset in order to have the original without the merge for the descriptive analytics.
+Finally, we detected that there were some ids that were repeated. We have interpreted that those users did more than one purch. We decided to sum both purch values and merge them in one row. We duplicated the dataset in order to have the original without the merge for the descriptive analytics.
 ```{r Merging the users that did more than one purch}
   library(dplyr)
 
@@ -153,6 +157,8 @@ We duplicated the dataset in order to have the original without the merge for th
 
 ### 2.3 Merge the datasets
 First of all, we used the library dplyr in order to merge the two datasets. We decided to create two new datasets, one with all the population (merge.all) and another with just the users that did a purchase in the game (merge.purch), with the two datasets we will compare both models to know which has the best linear model. In the dataset with all the population we changed the NAs values from purch to 0 EUR.
+
+We will use this new datasets in some parts of the descriptive analytics and in the regression analysis section.
 ```{r Merge datasets}
   library(dplyr)
   merge.all <-merge(DS,PR,by.x="userid",by.y="id", all = TRUE)
@@ -163,8 +169,7 @@ First of all, we used the library dplyr in order to merge the two datasets. We d
 
 ## 3. Descriptive Analytics
 
-Perform descriptive analytics of the datasets visually and numerically. To make this task simpler, we’ll do
-the analysis for each data set separately.
+We have performed a descriptive analytics of the datasets visually and numerically. We decided to make the analysis for each data set separately.
 
 ### 3.1. Dataset “Cookie Cats AB Testing”
 #### 3.1.1 Users that downloaded the game
@@ -190,14 +195,15 @@ The next step was calculating the distribution of game rounds in the players’ 
 #### 3.1.4 Retention (day 1 and day 7)
 What is the value of retention at day 1? (percentage of users that are still active the day after
 installation).
+We calculated the value of retention at day 1, this means percentage of the retention of all the users that were active in the first day (retention_1 = TRUE).
 ```{r retention day 1}
   activeUsersDay1 <- sum(DS$retention_1 == TRUE)
   totalUsers <- nrow(DS)
   percentageRetentionDay1 <- activeUsersDay1 * 100 / totalUsers
   paste(as.character(round(percentageRetentionDay1, 3)),"%")
 ```
-What is the value of retention at day 7? (percentage of users that are still active after one week of
-installation).
+
+After this, we also calculated the retention at day 7, this means the percentage of the retention of all the users that were still active after one week of installation (in other words, active in the day 1 and 7).
 ```{r retention day 7}
   activeUsersDay7 <- sum(DS$retention_1 == TRUE & DS$retention_7 == TRUE)
   percentageRetentionDay7 <- activeUsersDay7 * 100 / totalUsers
@@ -205,11 +211,12 @@ installation).
 ```
 
 #### 3.1.5 Are there non-playing users?
-To see if there are non-playing users, we look for those who had both retention at day 1 and at day 7 as FALSE.
+To see if there are non-playing users, we looked for those who had both retention at day 1 and at day 7 as FALSE.
 ```{r Sum non-playing users}
   non.playing.users <- sum(DS$retention_1 == FALSE & DS$retention_7 == FALSE) ; non.playing.users
 ```
-Finally, to compute the percentage, we just have to multiply the non-playing users for 100 and then divide it for the total users.
+
+Finally, to compute the percentage, we just had to multiply the non-playing users for 100 and then divide it for the total users.
 ```{r Percentage non-playing users}
   percentageNonPlayingUsers <- non.playing.users * 100 / totalUsers
   paste(as.character(round(percentageNonPlayingUsers, 2)),"%")
@@ -217,7 +224,7 @@ Finally, to compute the percentage, we just have to multiply the non-playing use
 
 ### 3.2 Dataset “Cookie Cats Purchases”
 #### 3.2.1 Percentage purchase quantities
-To do the descriptive analysis we start by computing how many and the percentage of each purchase quantity. To do so, we get how many purchases of the same amount are made. After that, we can easily compute the percentage of each purchase amount. Once we finished we used a barplot to show the data.
+To do the descriptive analysis, we start by computing how many and the percentage of each purchase quantity. To do so, we get how many purchases of the same amount are made. After that, we can easily compute the percentage of each purchase amount. Once we finished we used a barplot to show the data.
 
 ```{r Percentage Purchase Quantities}
   num.users.DS <- nrow(DS)
@@ -272,6 +279,7 @@ Then we decided to show the mean, max and min of the money spent. After computin
   money.data <- data.frame(mean, max, min)
   knitr::kable(money.data, format = "pipe", col.names = c("Mean", "Max", "Min"), align = c("l", "c", "c"))
 ```
+
 Finally, we made a list with the top 3 of the three most expensive purchases. We used a boxplot to compare the purchases between the two versions of the game.
 ```{r Top 3 more money spent and Boxplot}
   top3.max.purchase <- round(sort(PR$purch, decreasing = TRUE),)[1:3] ; top3.max.purchase
@@ -300,6 +308,7 @@ By dividing the total revenue by the total population of the game, we can see th
   ARPU <- round(ARPU, digit = 2) ; ARPU
 
 ```
+
 #### 4.3 ARPPU
 To see the amount of money spent by paying user, we just have to divide the total revenue, like before, but by the amount of paying users.
 ```{r ARPPU}
@@ -308,6 +317,7 @@ To see the amount of money spent by paying user, we just have to divide the tota
   ARPPU.pct <- ARPPU * 100 / num.users.PR ; ARPPU.pct
 
 ```
+
 We did a simple table with the Kable function to show the data.
 ```{r TABLE}
   MM <- data.frame(conversion.rate, ARPU, ARPPU)
@@ -400,17 +410,20 @@ degreesOfFredom<-(s1^2/meanGroupA + s2^2/meanGroupB)^2 /
   ( ((s1^2/meanGroupA)^2/meanGroupA-1) + ((s2^2/meanGroupB)^2/(meanGroupB-1) ))
 degreesOfFredom
 ```
-After calculating the previous values, we realize a comparasion between the observed value and the normal distribution, using the upper tail.
+
+After calculating the previous values, we realize a comparison between the observed value and the normal distribution, using the upper tail.
 ```{r Comparasion part 2}
 Talpha = qt ( 0.05, df=degreesOfFredom,lower.tail=FALSE )
 Talpha
 ```
-The necessary condition to reject H0 is sumGameRounds gate 40 > sumGameRounds gate 30
+
+The necessary condition to reject H0 is sumGameRounds gate 40 > sumGameRounds gate 30.
 ```{r tObs  and aplha}
 h0CanBeRejected<-Tobs>Talpha
 h0CanBeRejected
 ```
-For verification of the analysis we do a double check, now using the pvalue and alpha to see if the results are the same
+
+For the verification of the analysis, we do a double check, now using the pvalue and alpha to see if the results are the same.
 ```{r tObs  and aplha part 2}
 p<-pt(Tobs,df=degreesOfFredom,lower.tail=FALSE)
 p
@@ -418,7 +431,8 @@ alpha <- 0.005
 canRejectH0WithPvalue <- p<alpha
 canRejectH0WithPvalue
 ```
-To reject H0 p needs to be lower than alpha, in this case H0 can't be rejected
+
+To reject H0 p needs to be lower than alpha, in this case H0 can't be rejected.
 
 ### 5.4 Conclusion of A/B testing
 Since Tobs isn't in the acceptance area, we can't reject H0. This indicates that we don't have enough evidence to say that moving the gate to the level 40 the engagement will improve.
@@ -458,7 +472,7 @@ Through the two graphs, we can observe that the models relate to the total amoun
 
 In the first plot made with all the users, the line in the graph has a very low slope compared to the second plot made of just the users that realize purchases, which has a high slope. 
 
-This means that if the only take into account the users that realize purchases, there is a linear relation between playing more game rounds and spending more money but, if we take into account all the users and not just the ones that realize in-app purchases, we can observe that there is not a linear relation between this variables, just the opposite, the players that play more game rounds don't spend a single EUR.
+This means that if we only take into account the users that realize purchases, there is a linear relation between playing more game rounds and spending more money but, if we take into account all the users and not just the ones that realize in-app purchases, we can observe that there is not a linear relation between this variables, just the opposite, the players that play more game rounds don't spend a single EUR.
 
 ### 6.3 Model fit
 In order to evaluate the quality of the models, we used the function summary(): 
@@ -504,26 +518,18 @@ We also created a plot to have a visual representation of the evolution of the a
 ```
 
 ## 7. Dashboard
-The dashboard has been realized in Tableau and it has been attached in a pdf file.
-
-
+The dashboard has been realized in Tableau and has been attached in a pdf file.
 
 ## 8. Conclusion
-
-In conclusion, there were 90.185 users that downloaded the game. Those users were distributed in two groups of similar size, Group A (gate 30); with 44.698 players (50,6%) and Group B (gate 40); with 45.487 players (49,4%).
-The number of game rounds played was 2.294.854 (49,58%) for group A and 2.333.460 (50,42%) for group B.
+In conclusion, there were 90.185 users that downloaded the game. Those users were distributed in two groups of similar size, Group A (gate 30); with 44.698 players (50,6%) and Group B (gate 40); with 45.487 players (49,4%). The number of game rounds played was 2.294.854 (49,58%) for group A and 2.333.460 (50,42%) for group B.
 
 The percentage of the retention at day one was 44,52% while the retention at the day 7 decayed up to 14,62%, and 46,436 users never played the game, which is more than the half of the players (51,49%).
 
-Write a summary of your analysis, as if you were answering the questions to the designers. Be concise, clear, and use the right terminology.
-
-
 The conversion rate is average and the ARPU is really low. The most prominent metric of monetization is the ARPPU; which is about 6,5%. The average ARPPU for mobile games is around 5%, so in this game is 1,5% higher than average. That means that in this game there is a small amount of people that purchase in the game but those people spend more than the average.
 
-We couldn't have enough evidence to conclude that moving the gate from the level 30 to the level 40 make any improve. The same happens with the relation between game rounds and purchases. By the result we can't intuit that there is a direct relationship between these two variables.
+With the A/B testing, we couldn't have enough evidence to conclude that moving the gate from the level 30 to the level 40 made any improve.
 
-
-
+Finally, in the regression analysis we concluded that if we only take into account the users that realize purchases, there is a linear relation between playing more game rounds and spending more money but, if we take into account all the users and not just the ones that realize in-app purchases, we can observe that there is not a linear relation between this variables, just the opposite, the players that play more game rounds don't spend a single EUR.
 
 ## 9. Team contribution
 In order to realize this final project, first of all, one member of the group created the Rmd file, created the structure of the project and realized the first section called "1. Getting to know the datasets".
@@ -543,8 +549,6 @@ Marcel Feliu:
 - Descriptive Analytics (part 3.1 and 3.2)
 
 - Monetization metrics.
-
-- Dashboard.
 
 - Conclusions.
 
@@ -569,8 +573,6 @@ Eduard Corral:
 - Descriptive Analytics (part 3.1)
 
 - A/B testing.
-
-- Dashboard.
 
 - Conclusions.
 
